@@ -1,0 +1,113 @@
+2020-08-20 16:47:01.766 ERROR 20572 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : An incompatible version [1.1.33] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.14]
+2020-08-20 16:47:01.884 ERROR 20572 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : An incompatible version [1.1.33] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.14]
+2020-08-20 16:47:02.055 ERROR 20572 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : An incompatible version [1.1.33] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.14]
+2020-08-20 16:47:08.684 ERROR 20572 --- [restartedMain] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'exchange_topics_inform' defined in class path resource [com/factory/end/config/RabbitmqConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.rabbitmq.client.AMQP$Exchange]: Factory method 'EXCHANGE_TOPICS_INFORM' threw exception; nested exception is java.lang.ClassCastException: org.springframework.amqp.core.TopicExchange cannot be cast to com.rabbitmq.client.AMQP$Exchange
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:655)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:483)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1336)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1176)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:556)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:516)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:324)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:226)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:897)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:879)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:551)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:758)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:750)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:397)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:315)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1237)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1226)
+	at com.factory.end.FactoryEndApplication.main(FactoryEndApplication.java:15)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49)
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.rabbitmq.client.AMQP$Exchange]: Factory method 'EXCHANGE_TOPICS_INFORM' threw exception; nested exception is java.lang.ClassCastException: org.springframework.amqp.core.TopicExchange cannot be cast to com.rabbitmq.client.AMQP$Exchange
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:185)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:650)
+	... 25 common frames omitted
+Caused by: java.lang.ClassCastException: org.springframework.amqp.core.TopicExchange cannot be cast to com.rabbitmq.client.AMQP$Exchange
+	at com.factory.end.config.RabbitmqConfig.EXCHANGE_TOPICS_INFORM(RabbitmqConfig.java:29)
+	at com.factory.end.config.RabbitmqConfig$$EnhancerBySpringCGLIB$$a7fcf645.CGLIB$EXCHANGE_TOPICS_INFORM$2(<generated>)
+	at com.factory.end.config.RabbitmqConfig$$EnhancerBySpringCGLIB$$a7fcf645$$FastClassBySpringCGLIB$$5c66b75.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:244)
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:331)
+	at com.factory.end.config.RabbitmqConfig$$EnhancerBySpringCGLIB$$a7fcf645.EXCHANGE_TOPICS_INFORM(<generated>)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:154)
+	... 26 common frames omitted
+
+2020-08-20 16:48:20.258 ERROR 23140 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : An incompatible version [1.1.33] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.14]
+2020-08-20 16:48:20.369 ERROR 23140 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : An incompatible version [1.1.33] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.14]
+2020-08-20 16:48:20.492 ERROR 23140 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : An incompatible version [1.1.33] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.14]
+2020-08-20 16:48:28.380 ERROR 23140 --- [restartedMain] o.s.boot.SpringApplication               : Application run failed
+
+org.springframework.beans.factory.BeanCreationException: Error creating bean with name 'exchange_topics_inform' defined in class path resource [com/factory/end/config/RabbitmqConfig.class]: Bean instantiation via factory method failed; nested exception is org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.rabbitmq.client.AMQP$Exchange]: Factory method 'EXCHANGE_TOPICS_INFORM' threw exception; nested exception is java.lang.ClassCastException: org.springframework.amqp.core.TopicExchange cannot be cast to com.rabbitmq.client.AMQP$Exchange
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:655)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiateUsingFactoryMethod(ConstructorResolver.java:483)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.instantiateUsingFactoryMethod(AbstractAutowireCapableBeanFactory.java:1336)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBeanInstance(AbstractAutowireCapableBeanFactory.java:1176)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:556)
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:516)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:324)
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:226)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:322)
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:202)
+	at org.springframework.beans.factory.support.DefaultListableBeanFactory.preInstantiateSingletons(DefaultListableBeanFactory.java:897)
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:879)
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:551)
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:143)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:758)
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:750)
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:397)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:315)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1237)
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1226)
+	at com.factory.end.FactoryEndApplication.main(FactoryEndApplication.java:15)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:49)
+Caused by: org.springframework.beans.BeanInstantiationException: Failed to instantiate [com.rabbitmq.client.AMQP$Exchange]: Factory method 'EXCHANGE_TOPICS_INFORM' threw exception; nested exception is java.lang.ClassCastException: org.springframework.amqp.core.TopicExchange cannot be cast to com.rabbitmq.client.AMQP$Exchange
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:185)
+	at org.springframework.beans.factory.support.ConstructorResolver.instantiate(ConstructorResolver.java:650)
+	... 25 common frames omitted
+Caused by: java.lang.ClassCastException: org.springframework.amqp.core.TopicExchange cannot be cast to com.rabbitmq.client.AMQP$Exchange
+	at com.factory.end.config.RabbitmqConfig.EXCHANGE_TOPICS_INFORM(RabbitmqConfig.java:29)
+	at com.factory.end.config.RabbitmqConfig$$EnhancerBySpringCGLIB$$22816bcf.CGLIB$EXCHANGE_TOPICS_INFORM$2(<generated>)
+	at com.factory.end.config.RabbitmqConfig$$EnhancerBySpringCGLIB$$22816bcf$$FastClassBySpringCGLIB$$999b5bb9.invoke(<generated>)
+	at org.springframework.cglib.proxy.MethodProxy.invokeSuper(MethodProxy.java:244)
+	at org.springframework.context.annotation.ConfigurationClassEnhancer$BeanMethodInterceptor.intercept(ConfigurationClassEnhancer.java:331)
+	at com.factory.end.config.RabbitmqConfig$$EnhancerBySpringCGLIB$$22816bcf.EXCHANGE_TOPICS_INFORM(<generated>)
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:498)
+	at org.springframework.beans.factory.support.SimpleInstantiationStrategy.instantiate(SimpleInstantiationStrategy.java:154)
+	... 26 common frames omitted
+
+2020-08-20 16:52:05.053 ERROR 22180 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : An incompatible version [1.1.33] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.14]
+2020-08-20 16:52:05.170 ERROR 22180 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : An incompatible version [1.1.33] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.14]
+2020-08-20 16:52:05.318 ERROR 22180 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : An incompatible version [1.1.33] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.14]
+2020-08-20 16:53:44.995 ERROR 18628 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : An incompatible version [1.1.33] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.14]
+2020-08-20 16:53:45.137 ERROR 18628 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : An incompatible version [1.1.33] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.14]
+2020-08-20 16:53:45.364 ERROR 18628 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : An incompatible version [1.1.33] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.14]
+2020-08-20 17:02:37.786 ERROR 24652 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : An incompatible version [1.1.33] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.14]
+2020-08-20 17:02:37.919 ERROR 24652 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : An incompatible version [1.1.33] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.14]
+2020-08-20 17:02:38.124 ERROR 24652 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : An incompatible version [1.1.33] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.14]
+2020-08-20 17:07:33.037 ERROR 10796 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : An incompatible version [1.1.33] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.14]
+2020-08-20 17:07:33.150 ERROR 10796 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : An incompatible version [1.1.33] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.14]
+2020-08-20 17:07:33.309 ERROR 10796 --- [restartedMain] o.a.catalina.core.AprLifecycleListener   : An incompatible version [1.1.33] of the Apache Tomcat Native library is installed, while Tomcat requires version [1.2.14]
+2020-08-20 17:12:11.457 ERROR 10796 --- [http-nio-8080-exec-6] c.f.end.util.websocket.WebSocketServer   : 用户10,不在线！

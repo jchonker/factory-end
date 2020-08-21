@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<!--<mapper namespace="com.factory.end.dao.DYInternalHistoryDao">-->
+
+    <!--<resultMap id="dyInternalHistoryMap" type="arraylist">-->
+        <!--<id property="Production_Date" column="Production_Date"></id>-->
+        <!--<result ></result>-->
+    <!--</resultMap>-->
+
+    <!--<select id="selectAllDYInternalHistory" resultType="com.factory.end.vo.DYInternalHistory">-->
+        <!--select * from DY_Internal_History;-->
+    <!--</select>-->
+<!--</mapper>-->
