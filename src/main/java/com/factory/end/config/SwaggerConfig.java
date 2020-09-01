@@ -30,7 +30,7 @@ public class SwaggerConfig {
     }
 
     private ApiInfo apiInfo(){
-        return new ApiInfoBuilder().title("swagger和springboot整合").description("swagger的API文档")
+        return new ApiInfoBuilder().title("云MES后端程序").description("swagger的API文档")
                 .version("1.0").build();
     }
 }

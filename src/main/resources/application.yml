@@ -1,0 +1,25 @@
+#spring:
+#  application:
+#    name: factory-end
+#  jpa:
+#    hibernate:
+##      ddl-auto: update
+#    show-sql: true
+#
+#  datasource:
+#    #主数据源
+#    primary:
+#      jdbc-url: jdbc:sqlserver://192.168.122.30;databaseName=Factory1
+#      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#      username: sa
+#      password: 1234
+#    #次数据源
+#    secondary:
+#      jdbc-url: jdbc:sqlserver://localhost;databaseName=SA1
+#      driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+#      username: sa
+#      password: 123456
+##  jooq:
+##    sql-dialect: org.hibernate.dialect.SQLServer2016Dialect
+#
+##spring.jpa.hibernate.dialect=org.hibernate.dialect.SQLServer2016Dialect

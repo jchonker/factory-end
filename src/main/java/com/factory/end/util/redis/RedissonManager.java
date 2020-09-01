@@ -38,20 +38,16 @@ public class RedissonManager {
     /**
      * redis的ip地址
      */
-    @Value("${redis.host}")
     private String ip;
 
     /**
      * redis的port
      */
-
-    @Value("${redis.port}")
     private String port;
 
     /**
      * redis的密码
      */
-    @Value("${redis.password}")
     private String password;
 
     @Resource
@@ -61,16 +57,14 @@ public class RedissonManager {
      * 构造方法
      */
     public RedissonManager() {
-//        ip = redisBean.getHost();
-//        port = redisBean.getPort();
-//        password = redisBean.getPassword();
-
         ip = "106.53.220.55";
         port = "6379";
         password = "123456";
 
         logger.info(ip+":"+port+":"+password);
         config.useSingleServer().setAddress("redis://"+ip+":"+port).setPassword(password);
+        //设置超时时间
+        config.setLockWatchdogTimeout(5000);
         /**
          * 得到redisson对象
          */

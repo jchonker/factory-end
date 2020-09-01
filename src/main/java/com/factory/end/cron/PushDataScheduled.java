@@ -27,8 +27,9 @@ public class PushDataScheduled {
     /**
      * 推送数据到websocket客户端
      */
-    @Scheduled(cron = "0/3 * * * * ? ")
-    public void pushData(){
-        pushDataToClient.push(clientUserId);
-    }
+//    @Scheduled(cron = "0/3 * * * * ? ")
+//    public void pushData(){
+//        pushDataToClient.push(clientUserId);
+//    }
+
 }

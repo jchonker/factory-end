@@ -1,8 +1,8 @@
 package com.factory.end.util;
 
 import com.alibaba.fastjson.JSON;
-import com.factory.end.dto.EquipmentDto;
-import com.factory.end.service.EquipmentService;
+import com.factory.end.dto.second.MyEquipmentDto;
+import com.factory.end.service.second.MyEquipmentService;
 import com.factory.end.util.websocket.WebSocketServer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,16 +19,16 @@ import java.util.List;
 @Component
 public class PushDataToClient {
     @Autowired
-    private EquipmentService equipmentService;
+    private MyEquipmentService myEquipmentService;
 
     /**
      * 推送
      */
     public void push(String userId){
         //获取信息
-        List<EquipmentDto> equipmentDtoList = equipmentService.findAll();
+        List<MyEquipmentDto> myEquipmentDtoList = myEquipmentService.findAll();
         //将信息对象转换成json字符串
-        String jsonString = JSON.toJSONString(equipmentDtoList);
+        String jsonString = JSON.toJSONString(myEquipmentDtoList);
         //连接成功推送
         try {
             WebSocketServer.sendInfo(jsonString,userId);

@@ -49,12 +49,6 @@ public class RedisLockTest {
 
     @Test
     public void test2(){
-        //RedisBean redisBean = new RedisBean();
-        System.out.println("redisBean:"+redisBean);
-        String ip = redisBean.getHost();
-        String port = redisBean.getPort();
-        String password = redisBean.getPassword();
-        System.out.println(ip+":"+port+":"+password);
     }
 
     @Autowired

@@ -12,14 +12,7 @@ import org.springframework.stereotype.Component;
  * @Version 1.0
  */
 @Component
-//@ConfigurationProperties(prefix = "redis")
 @Data
 public class RedisBean{
-    @Value("${redis.host}")
-    private String host;
-    @Value("${redis.port}")
-    private String port;
-    @Value("${redis.password}")
-    private String password;
 
 }
