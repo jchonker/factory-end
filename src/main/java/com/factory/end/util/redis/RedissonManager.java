@@ -59,9 +59,9 @@ public class RedissonManager {
     public RedissonManager() {
         ip = "106.53.220.55";
         port = "6379";
-        password = "123456";
+        password = "123abc456";
 
-        logger.info(ip+":"+port+":"+password);
+        //logger.info(ip+":"+port+":"+password);
         config.useSingleServer().setAddress("redis://"+ip+":"+port).setPassword(password);
         //设置超时时间
         config.setLockWatchdogTimeout(5000);

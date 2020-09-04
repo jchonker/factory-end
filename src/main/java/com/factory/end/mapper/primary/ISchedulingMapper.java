@@ -3,6 +3,8 @@ package com.factory.end.mapper.primary;
 import com.factory.end.model.primary.Product;
 import com.factory.end.model.primary.Scheduling;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -13,20 +15,21 @@ import java.util.List;
  * @Version 1.0
  */
 @Mapper
-public interface ISchedulingMapper extends CrudRepository<Scheduling,Integer> {
+public interface ISchedulingMapper extends CrudRepository<Scheduling,Integer>, JpaSpecificationExecutor<Scheduling> {
     /**
      * 根据订单号查询所有数据
+     * findAllByOrderNo
      * @param orderNo
      * @return
      */
-    List<Scheduling> findAllByOrderNo(Integer orderNo);
+    Scheduling findByOrderNo(String orderNo);
 
     /**
      * 根据设备号查询所有数据
      * @param equNo
      * @return
      */
-    List<Scheduling> findAllByEquipmentNo(Integer equNo);
+    List<Scheduling> findAllByEquipmentNo(String equNo);
 
     /**
      * 根据产品型号查询
@@ -76,21 +79,21 @@ public interface ISchedulingMapper extends CrudRepository<Scheduling,Integer> {
      * @param orderNo
      * @return
      */
-    boolean deleteByOrderNo(Integer orderNo);
+    Integer deleteByOrderNo(String orderNo);
 
     /**
      * 根据下单人员删除
      * @param username
      * @return
      */
-    boolean deleteByUserName(String username);
+    Integer deleteByUserName(String username);
 
     /**
      * 根据订单号查询订单是否存在
      * @param orderNo
      * @return
      */
-    boolean existsByOrderNo(Integer orderNo);
+    boolean existsByOrderNo(String orderNo);
 
     /**
      * 根据下单人员名查询订单是否存在
@@ -99,4 +102,11 @@ public interface ISchedulingMapper extends CrudRepository<Scheduling,Integer> {
      */
     boolean existsByUserName(String username);
 
+    /**
+     * 根据顺序排序根据设备号查询查询第1条记录
+     * @param equNo
+     * @return
+     */
+    @Query(value = "select top 1 * from pro_Scheduling where Equipment_No = :equNo order by Manu_Order;",nativeQuery = true)
+    Scheduling findOneByEquipmentNoOrderByManuOrder(String equNo);
 }

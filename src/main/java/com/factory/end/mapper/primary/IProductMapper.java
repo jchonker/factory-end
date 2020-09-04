@@ -1,8 +1,8 @@
 package com.factory.end.mapper.primary;
 
-import com.factory.end.model.primary.Color;
 import com.factory.end.model.primary.Product;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -13,27 +13,27 @@ import java.util.List;
  * @Version 1.0
  */
 @Mapper
-public interface IProductMapper extends CrudRepository<Product,Integer> {
+public interface IProductMapper extends CrudRepository<Product,Integer>, JpaSpecificationExecutor<Product> {
     /**
      * 根据订单号查询所有数据
      * @param orderNo
      * @return
      */
-    List<Product> findAllByOrderNo(Integer orderNo);
+    List<Product> findAllByOrderNo(String orderNo);
 
     /**
      * 根据订单号查询所有数据
      * @param productNo
      * @return
      */
-    List<Product> findAllByProductNo(Integer productNo);
+    List<Product> findAllByProductNo(String productNo);
 
     /**
      * 根据设备号查询所有数据
      * @param equNo
      * @return
      */
-    List<Product> findAllByEquipmentNo(Integer equNo);
+    List<Product> findAllByEquipmentNo(String equNo);
 
     /**
      * 根据生产开始时间段查询所有数据
@@ -45,24 +45,24 @@ public interface IProductMapper extends CrudRepository<Product,Integer> {
 
     /**
      * 根据生产完成标志查询所有数据
-     * @param compProductFlg
-     * findAllByCoAndCompProductFlg
+     * @param orderStatus
+     * findAllByCompProductFlg
      * @return
      */
-    List<Product> findAllByCompProductFlg(Integer compProductFlg);
+    List<Product> findAllByOrderStatus(Integer orderStatus);
 
     /**
      * 根据订单号查询订单是否存在
      * @param orderNo
      * @return
      */
-    boolean existsByOrderNo(Integer orderNo);
+    boolean existsByOrderNo(String orderNo);
 
     /**
      * 根据订单号删除订单数据
      * @param orderNo
      * @return
      */
-    boolean deleteByOrderNo(Integer orderNo);
+    Integer deleteByOrderNo(String orderNo);
 
 }

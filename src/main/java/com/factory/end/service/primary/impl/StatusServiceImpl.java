@@ -4,6 +4,8 @@ import com.factory.end.mapper.primary.IStatusMapper;
 import com.factory.end.dto.primary.StatusDto;
 import com.factory.end.model.primary.Status;
 import com.factory.end.service.primary.StatusService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,27 +19,31 @@ import java.util.List;
  */
 @Service
 public class StatusServiceImpl implements StatusService {
+    Logger logger = LoggerFactory.getLogger(StatusServiceImpl.class);
+
     @Autowired
     private IStatusMapper iStatusMapper;
 
     @Override
-    public List<StatusDto> findAll() {
+    public List<Status> findAll() {
         List<StatusDto> statusDtos = new ArrayList<>();
         Iterable<Status> statusList = iStatusMapper.findAll();
-        System.out.println("statusList:"+statusList);
-        //List<Status> statusList = (List<Status>) all;
-        StatusDto statusDto = null;
-        if(statusList != null){
-            System.out.println(statusList);
-            for(Status status:statusList){
-                statusDto = entityToDto(status);
-                statusDtos.add(statusDto);
-            }
-            return statusDtos;
-        }else {
-            System.out.println("查询statusDtos无值:");
-        }
-        return null;
+        logger.info(statusList.toString());
+        return (List<Status>) statusList;
+//        logger.info(statusList.toString());
+//        //List<Status> statusList = (List<Status>) all;
+//        StatusDto statusDto = null;
+//        if(statusList != null){
+//            System.out.println(statusList);
+//            for(Status status:statusList){
+//                statusDto = entityToDto(status);
+//                statusDtos.add(statusDto);
+//            }
+//            return statusDtos;
+//        }else {
+//            System.out.println("查询statusDtos无值:");
+//        }
+//        return null;
     }
 
     /**
@@ -45,19 +51,19 @@ public class StatusServiceImpl implements StatusService {
      * @param status
      * @return
      */
-    private StatusDto entityToDto(Status status) {
-        StatusDto statusDto;
-        statusDto = new StatusDto();
-        statusDto.setCollectValue(status.getCollectValue());
-        statusDto.setCompProductFlg(status.getCompProductFlg());
-        statusDto.setEquipmentNo(status.getEquipmentNo());
-        statusDto.setKindClass(status.getKindClass());
-        statusDto.setKindName(status.getKindName());
-        statusDto.setLastUpdate(status.getLastUpdate());
-        statusDto.setLotName(status.getLotName());
-        statusDto.setNgValue(status.getNgValue());
-        statusDto.setOkValue(status.getOkValue());
-        statusDto.setTargetValue(status.getTargetValue());
-        return statusDto;
-    }
+//    private StatusDto entityToDto(Status status) {
+//        StatusDto statusDto;
+//        statusDto = new StatusDto();
+//        statusDto.setCollectValue(status.getCollectValue());
+//        statusDto.setCompProductFlg(status.getCompProductFlg());
+//        statusDto.setEquipmentNo(status.getEquipmentNo());
+//        statusDto.setKindClass(status.getKindClass());
+//        statusDto.setKindName(status.getKindName());
+//        statusDto.setLastUpdate(status.getLastUpdate());
+//        statusDto.setLotName(status.getLotName());
+//        statusDto.setNgValue(status.getNgValue());
+//        statusDto.setOkValue(status.getOkValue());
+//        statusDto.setTargetValue(status.getTargetValue());
+//        return statusDto;
+//    }
 }

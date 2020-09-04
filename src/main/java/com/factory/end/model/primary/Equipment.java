@@ -19,11 +19,32 @@ public class Equipment {
     private Integer id;
 
     @Column(name = "Equipment_No")
-    private Integer equipmentNo;
+    private String equipmentNo;
 
     @Column(name = "Equipment_Name")
     private String equipmentName;
 
     @Column(name = "Production_type")
     private String productionType;
+
+    @Column(name = "Equipment_Status")
+    private Integer equipmentStatus;
+
+    @Column(name = "Startup_Date")
+    private String startupDate;
+
+    @Column(name = "Proess_Date")
+    private String proessDate;
+
+    @Column(name = "Allow_Product")
+    private Integer allowProduct;
+
+    @Column(name = "Auto_Model")
+    private Integer autoModel;
+
+    @Column(name = "Production_Sequence")
+    private Integer productionSequence;
+
+    @Column(name = "Production_Number")
+    private Integer productionNumber;
 }

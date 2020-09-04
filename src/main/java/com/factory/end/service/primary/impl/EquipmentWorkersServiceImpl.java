@@ -4,6 +4,8 @@ import com.factory.end.mapper.primary.IEquipmentMapper;
 import com.factory.end.mapper.primary.IEquipmentWorkersMapper;
 import com.factory.end.model.primary.EquipmentWorkers;
 import com.factory.end.service.primary.EquipmentWorkersService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +18,7 @@ import java.util.List;
  */
 @Service
 public class EquipmentWorkersServiceImpl implements EquipmentWorkersService {
+    Logger logger = LoggerFactory.getLogger(EquipmentWorkersServiceImpl.class);
 
     @Autowired
     private IEquipmentWorkersMapper iEquipmentWorkersMapper;
@@ -28,7 +31,7 @@ public class EquipmentWorkersServiceImpl implements EquipmentWorkersService {
     @Override
     public String selectWorkNoByENoOrderByWorkerDate(Integer equNo) {
         String workerNo = iEquipmentWorkersMapper.selectWorkNoByENoOrderByWorkerDate(equNo);
-        System.out.println("查询到的workerNo:"+workerNo);
+        logger.info(workerNo);
         return workerNo;
     }
 
@@ -40,7 +43,7 @@ public class EquipmentWorkersServiceImpl implements EquipmentWorkersService {
     @Override
     public List<EquipmentWorkers> findEquipmentWorkersByEquipmentNo(Integer equNo) {
         List<EquipmentWorkers> equipmentWorkersByEquipmentNo = iEquipmentWorkersMapper.findEquipmentWorkersByEquipmentNo(equNo);
-        System.out.println("查询到的quipmentWorkers:"+equipmentWorkersByEquipmentNo);
+        logger.info(equipmentWorkersByEquipmentNo.toString());
         return equipmentWorkersByEquipmentNo;
     }
 
@@ -52,7 +55,7 @@ public class EquipmentWorkersServiceImpl implements EquipmentWorkersService {
     @Override
     public List<EquipmentWorkers> findEquipmentWorkersByWorkersNo(String workersNo) {
         List<EquipmentWorkers> equipmentWorkersByWorkersNo = iEquipmentWorkersMapper.findEquipmentWorkersByWorkersNo(workersNo);
-        System.out.println("查询到的quipmentWorkers"+equipmentWorkersByWorkersNo);
+        logger.info(equipmentWorkersByWorkersNo.toString());
         return equipmentWorkersByWorkersNo;
     }
 

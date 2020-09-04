@@ -24,19 +24,19 @@ public class ProductHistory {
      * 生产单号
      */
     @Column(name = "Product_No")
-    private Integer productNo;
+    private String productNo;
 
     /**
      * 订单编号
      */
     @Column(name = "Order_No")
-    private Integer orderNo;
+    private String orderNo;
 
     /**
      * 设备编号
      */
     @Column(name = "Equipment_No")
-    private Integer equipmentNo;
+    private String equipmentNo;
 
     /**
      * 计划值
@@ -63,10 +63,10 @@ public class ProductHistory {
     private String compExpectDate;
 
     /**
-     * 生产完成标志  写入“1”(待生产)或“2”(生产中)或"3"(生产完成)
+     * 生产完成标志
      */
-    @Column(name = "Comp_Product_Flg")
-    private Integer compProductFlg;
+    @Column(name = "Order_Status")
+    private Integer orderStatus;
 
     /**
      * 生产完成进度
@@ -91,6 +91,12 @@ public class ProductHistory {
      */
     @Column(name = "NG_Value")
     private Integer ngValue;
+
+    /**
+     * 下单人员名
+     */
+    @Column(name = "User_Name")
+    private String userName;
 
     /**
      * 生产完成时间

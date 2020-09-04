@@ -1,6 +1,7 @@
 package com.factory.end.service.primary;
 
 import com.factory.end.dto.primary.StatusDto;
+import com.factory.end.model.primary.Status;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,5 +13,5 @@ import java.util.List;
  */
 @Service
 public interface StatusService {
-    List<StatusDto> findAll();
+    List<Status> findAll();
 }

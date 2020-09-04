@@ -18,7 +18,7 @@ public interface EquipmentService {
      *
      * @return
      */
-    List<EquipmentDto> findAll();
+    List<Equipment> findAll();
 
 
 }

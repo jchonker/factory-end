@@ -1,9 +1,10 @@
 package com.factory.end.model.primary;
 
-import cn.hutool.core.date.DateTime;
+import com.factory.end.util.validate.ProductValidationGroups;
 import lombok.Data;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -17,6 +18,7 @@ import javax.validation.constraints.NotNull;
 @Entity
 public class Product {
 
+    @NotNull(groups = ProductValidationGroups.Update.class,message = "ID值不能为空")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID")
@@ -26,35 +28,38 @@ public class Product {
      * 生产单号
      */
     @Column(name = "Product_No")
-    @NotNull(message = "生产单号不能为空")
-    private Integer productNo;
+//    @NotNull(groups = {ProductValidationGroups.Insert.class,ProductValidationGroups.Update.class},message = "生产单号不能为空")
+//    @NotBlank(groups = {ProductValidationGroups.Insert.class,ProductValidationGroups.Update.class},message = "生产单号不能为空")
+    private String productNo;
 
     /**
      * 订单编号
      */
     @Column(name = "Order_No")
-    @NotNull(message = "订单编号不能为空")
-    private Integer orderNo;
+//    @NotNull(groups = {ProductValidationGroups.Insert.class,ProductValidationGroups.Update.class},message = "订单编号不能为空")
+//    @NotBlank(groups = {ProductValidationGroups.Insert.class,ProductValidationGroups.Update.class},message = "订单编号不能存在")
+    private String orderNo;
 
     /**
      * 设备编号
      */
     @Column(name = "Equipment_No")
-    @NotNull(message = "设备编号不能为空")
-    private Integer equipmentNo;
+//    @NotNull(groups = {ProductValidationGroups.Insert.class,ProductValidationGroups.Update.class},message = "设备编号不能为空")
+//    @NotBlank(groups = {ProductValidationGroups.Insert.class,ProductValidationGroups.Update.class},message = "设备编号不能为空")
+    private String equipmentNo;
 
     /**
      * 计划值
      */
     @Column(name = "Target_Value")
-    @NotNull(message = "计划值不能为空")
+    //@NotNull(groups = {ProductValidationGroups.Insert.class,ProductValidationGroups.Update.class},message = "计划值不能为空")
     private Integer targetValue;
 
     /**
      * 生产开始时间
      */
     @Column(name = "Start_Date")
-    @NotNull(message = "生产开始时间不能为空")
+    //@NotNull(groups = {ProductValidationGroups.Insert.class,ProductValidationGroups.Update.class},message = "生产开始时间不能为空")
     private String startDate;
 
     /**
@@ -70,10 +75,10 @@ public class Product {
     private String compExpectDate;
 
     /**
-     * 生产完成标志  写入“1”(待生产)或“2”(生产中)或"3"(生产完成)
+     * 生产完成标志
      */
-    @Column(name = "Comp_Product_Flg")
-    private Integer compProductFlg;
+    @Column(name = "Order_Status")
+    private Integer orderStatus;
 
     /**
      * 生产完成进度
@@ -98,6 +103,12 @@ public class Product {
      */
     @Column(name = "NG_Value")
     private Integer ngValue;
+
+    /**
+     * 下单人员名
+     */
+    @Column(name = "User_Name")
+    private String userName;
 
     /**
      * 生产完成时间

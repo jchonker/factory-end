@@ -1,6 +1,7 @@
 package com.factory.end.service.primary;
 
 import com.factory.end.model.primary.Scheduling;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,14 +25,14 @@ public interface SchedulingService {
      * @param orderNo
      * @return
      */
-    List<Scheduling> findAllByOrderNo(Integer orderNo);
+    Scheduling findByOrderNo(String orderNo);
 
     /**
      * 根据设备号查询所有数据
      * @param equNo
      * @return
      */
-    List<Scheduling> findAllByEquipmentNo(Integer equNo);
+    List<Scheduling> findAllByEquipmentNo(String equNo);
 
     /**
      * 根据产品型号查询
@@ -81,21 +82,21 @@ public interface SchedulingService {
      * @param orderNo
      * @return
      */
-    boolean deleteByOrderNo(Integer orderNo);
+    Integer deleteByOrderNo(String orderNo);
 
     /**
      * 根据下单人员删除
      * @param username
      * @return
      */
-    boolean deleteByUserName(String username);
+    Integer deleteByUserName(String username);
 
     /**
      * 根据订单号查询订单是否存在
      * @param orderNo
      * @return
      */
-    boolean existsByOrderNo(Integer orderNo);
+    boolean existsByOrderNo(String orderNo);
 
     /**
      * 根据下单人员名查询订单是否存在
@@ -115,4 +116,20 @@ public interface SchedulingService {
      * @return
      */
     void saveSchedulings(List<Scheduling> schedulingList);
+
+    /**
+     * 根据顺序排序根据设备号查询查询第1条记录
+     * @param equNo
+     * @return
+     */
+    Scheduling findOneByEquipmentNoOrderByManuOrder(String equNo);
+
+    /**
+     * 复杂条件分页查询
+     * @param order
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    Page<Scheduling> findByPage(Scheduling order, Integer currentPage, Integer pageSize);
 }

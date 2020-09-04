@@ -2,6 +2,7 @@ package com.factory.end.service.primary;
 
 import com.factory.end.model.primary.Color;
 import com.factory.end.model.primary.Product;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,21 +25,21 @@ public interface ProductService {
      * @param orderNo
      * @return
      */
-    List<Product> findAllByOrderNo(Integer orderNo);
+    List<Product> findAllByOrderNo(String orderNo);
 
     /**
      * 根据订单号查询所有数据
      * @param productNo
      * @return
      */
-    List<Product> findAllByProductNo(Integer productNo);
+    List<Product> findAllByProductNo(String productNo);
 
     /**
      * 根据设备号查询所有数据
      * @param equNo
      * @return
      */
-    List<Product> findAllByEquipmentNo(Integer equNo);
+    List<Product> findAllByEquipmentNo(String equNo);
 
     /**
      * 根据生产开始时间查询所有数据
@@ -50,10 +51,10 @@ public interface ProductService {
 
     /**
      * 根据生产完成标志查询所有数据
-     * @param compProductFlg
+     * @param orderStatus
      * @return
      */
-    List<Product> findAllByCompProductFlg(Integer compProductFlg);
+    List<Product> findAllByOrderStatus(Integer orderStatus);
 
 
     /**
@@ -63,9 +64,23 @@ public interface ProductService {
     Product saveProduct(Product product);
 
     /**
+     * 新增订单,传入订单号
+     * @param orderNo
+     * @return
+     */
+    Product saveProductByOrderNo(String orderNo);
+
+    /**
      * 批量添加
      */
     List<Product> saveProducts(List<Product> productList);
+
+    /**
+     * 批量新增订单,传入订单列表
+     * @param orderNoList
+     * @return
+     */
+    List<Product> saveProductsByOrderNoList(List<String> orderNoList);
 
     /**
      * 根据id查询数据是否存在
@@ -79,12 +94,21 @@ public interface ProductService {
      * @param orderNo
      * @return
      */
-    boolean existsByOrderNo(Integer orderNo);
+    boolean existsByOrderNo(String orderNo);
 
     /**
      * 根据订单号删除订单数据
      * @param orderNo
      * @return
      */
-    boolean deleteByOrderNo(Integer orderNo);
+    Integer deleteByOrderNo(String orderNo);
+
+    /**
+     * 复杂条件分页查询
+     * @param product
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    Page<Product> findByPage(Product product, Integer currentPage, Integer pageSize);
 }

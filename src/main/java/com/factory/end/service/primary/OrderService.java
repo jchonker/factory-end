@@ -1,9 +1,11 @@
 package com.factory.end.service.primary;
 
 import com.factory.end.model.primary.Order;
-import org.aspectj.weaver.ast.Or;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -30,7 +32,7 @@ public interface OrderService {
      * @param orderNo
      * @return
      */
-    Order findOrderByOrderNo(Integer orderNo);
+    Order findOrderByOrderNo(String orderNo);
 
     /**
      * 根据产品名查询
@@ -87,21 +89,28 @@ public interface OrderService {
      * @param orderNo
      * @return
      */
-    boolean deleteOrderByOrderNo(Integer orderNo);
+    Integer deleteOrderByOrderNo(String orderNo);
 
     /**
      * 根据下单人员删除订单
      * @param username
      * @return
      */
-    boolean deleteOrdersByUserName(String username);
+    Integer deleteOrdersByUserName(String username);
 
     /**
      * 根据订单号判断订单是否存在
      * @param orderNo
      * @return
      */
-    boolean existsOrderByOrderNo(Integer orderNo);
+    boolean existsOrderByOrderNo(String orderNo);
+
+    /**
+     * 根据下单人员名判断订单是否存在
+     * @param username
+     * @return
+     */
+    boolean existsOrdersByUserName(String username);
 
     /**
      * 修改单条订单
@@ -117,4 +126,27 @@ public interface OrderService {
      */
     List<Order> updateOrders(List<Order> orderList);
 
+    /**
+     * 分页查询
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    Page<Order> findAllByPage(Integer currentPage, Integer pageSize);
+
+    /**
+     * 根据订单号修改订单状态
+     * @param orderNo
+     * @return
+     */
+    boolean updateOrderStatusByOrderNo(String orderNo);
+
+    /**
+     * 复杂条件分页查询
+     * @param order
+     * @param currentPage
+     * @param pageSize
+     * @return
+     */
+    Page<Order> findByPage(Order order, Integer currentPage, Integer pageSize);
 }

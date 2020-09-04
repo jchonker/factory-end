@@ -2,6 +2,12 @@ package com.factory.end.mapper.primary;
 
 import com.factory.end.model.primary.Order;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 
 import java.util.List;
@@ -10,15 +16,24 @@ import java.util.List;
  * @Author jchonker
  * @Date 2020/8/26 17:33
  * @Version 1.0
+ * JpaSpecificationExecutor做复杂查询
  */
 @Mapper
-public interface IOrderMapper extends CrudRepository<Order,Integer> {
+public interface IOrderMapper extends CrudRepository<Order,Integer>, JpaSpecificationExecutor<Order> {
+    /**
+     * 分页查询
+     * @param pageable
+     * @return
+     */
+    @Query(value = "select * from pro_Order",nativeQuery = true)
+    Page<Order> selectAll(Pageable pageable);
+
     /**
      * 根据orderNo查询
      * @param orderNo
      * @return
      */
-    Order findOrderByOrderNo(Integer orderNo);
+    Order findOrderByOrderNo(String orderNo);
 
     /**
      * 根据产品名查询
@@ -71,19 +86,36 @@ public interface IOrderMapper extends CrudRepository<Order,Integer> {
      * @param orderNo
      * @return
      */
-    boolean deleteOrderByOrderNo(Integer orderNo);
+    @Modifying
+    Integer deleteOrderByOrderNo(String orderNo);
 
     /**
      * 根据下单人员删除订单
      * @param username
      * @return
      */
-    boolean deleteOrdersByUserName(String username);
+    @Modifying
+    Integer deleteOrdersByUserName(String username);
 
     /**
      * 根据订单号判断订单是否存在
      * @param orderNo
      * @return
      */
-    boolean existsOrderByOrderNo(Integer orderNo);
+    boolean existsOrderByOrderNo(String orderNo);
+
+    /**
+     * 根据下单人员名判断订单是否存在
+     * @param username
+     * @return
+     */
+    boolean existsOrdersByUserName(String username);
+
+    /**
+     * 根据订单号修改订单状态
+     * @param orderNo
+     * @return
+     */
+    @Query(value = "update Order_Status from pro_Order where Order_No = :orderNo",nativeQuery = true)
+    boolean updateOrderStatusByOrderNo(@Param("orderNo") String orderNo);
 }

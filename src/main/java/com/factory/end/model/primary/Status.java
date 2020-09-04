@@ -26,7 +26,7 @@ public class Status{
      * 设备No
      */
     @Column(name = "Equipment_No")
-    private Integer equipmentNo;
+    private String equipmentNo;
 
     /**
      * 产品型号

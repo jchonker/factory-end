@@ -11,7 +11,7 @@ import lombok.Data;
 public class EquipmentDto {
     private Integer id;
 
-    private Integer equipmentNo;
+    private String equipmentNo;
 
     private String equipmentName;
 
