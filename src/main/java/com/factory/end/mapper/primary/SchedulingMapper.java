@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -15,7 +16,8 @@ import java.util.List;
  * @Version 1.0
  */
 @Mapper
-public interface ISchedulingMapper extends CrudRepository<Scheduling,Integer>, JpaSpecificationExecutor<Scheduling> {
+public interface SchedulingMapper extends CrudRepository<Scheduling,Integer>, JpaSpecificationExecutor<Scheduling> {
+
     /**
      * 根据订单号查询所有数据
      * findAllByOrderNo
@@ -108,5 +110,5 @@ public interface ISchedulingMapper extends CrudRepository<Scheduling,Integer>, J
      * @return
      */
     @Query(value = "select top 1 * from pro_Scheduling where Equipment_No = :equNo order by Manu_Order;",nativeQuery = true)
-    Scheduling findOneByEquipmentNoOrderByManuOrder(String equNo);
+    Scheduling findOneByEquipmentNoOrderByManuOrder(@Param("equNo") String equNo);
 }

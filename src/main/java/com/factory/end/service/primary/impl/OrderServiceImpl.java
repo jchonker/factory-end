@@ -1,6 +1,6 @@
 package com.factory.end.service.primary.impl;
 
-import com.factory.end.mapper.primary.IOrderMapper;
+import com.factory.end.mapper.primary.OrderMapper;
 import com.factory.end.model.primary.Order;
 import com.factory.end.service.primary.OrderService;
 import org.slf4j.Logger;
@@ -13,9 +13,13 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author jchonker
@@ -27,7 +31,7 @@ public class OrderServiceImpl implements OrderService {
     Logger logger = LoggerFactory.getLogger(OrderServiceImpl.class);
 
     @Autowired
-    private IOrderMapper iOrderMapper;
+    private OrderMapper iOrderMapper;
 
     /**
      * 获取订单id
@@ -41,10 +45,28 @@ public class OrderServiceImpl implements OrderService {
         return "O"+System.currentTimeMillis();
     }
 
+    /**
+     * 获取系统预期完成时间
+     * @param targetValue 目标产量
+     * @return
+     */
+    public synchronized String getCompExceptDate(Integer targetValue){
+        long timeMillis = System.currentTimeMillis();
+        long compTimeMillis = timeMillis + 5 * 1000 * targetValue;
+        Date date = new Date(compTimeMillis);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String compExceptionDateStr = simpleDateFormat.format(date);
+        logger.info("获取系统预期完成时间:"+compExceptionDateStr);
+        return compExceptionDateStr;
+    }
+
     @Override
     public void save(Order order) {
         try {
             order.setOrderNo(getOrderNoString());
+            order.setCompExpectDate(getCompExceptDate(order.getTargetValue()));
+            //订单完成时间设置为空
+            order.setCompOrderDate(null);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -52,8 +74,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void saveAll(List<Order> orderList) {
-        iOrderMapper.saveAll(orderList);
+    public void saveAll(List<Order> orderList) throws InterruptedException {
+        List<Order> newOrderList = new ArrayList<>();
+        for (Order order : orderList) {
+            order.setOrderNo(getOrderNoString());
+            order.setCompExpectDate(getCompExceptDate(order.getTargetValue()));
+            newOrderList.add(order);
+        }
+        iOrderMapper.saveAll(newOrderList);
     }
 
     @Override
@@ -61,6 +89,15 @@ public class OrderServiceImpl implements OrderService {
         Order orderByOrderNo = iOrderMapper.findOrderByOrderNo(orderNo);
         logger.info(orderByOrderNo.toString());
         return orderByOrderNo;
+    }
+
+    @Override
+    public List<Order> findOrdersByOrderStatusIn(Integer[] orderStatusArr) {
+        List<Order> ordersByOrderStatusIn = iOrderMapper.findOrdersByOrderStatusIn(orderStatusArr);
+        for (Order order : ordersByOrderStatusIn) {
+            logger.info(order.toString());
+        }
+        return ordersByOrderStatusIn;
     }
 
     @Override
@@ -175,11 +212,13 @@ public class OrderServiceImpl implements OrderService {
     /**
      * 根据订单号修改订单状态
      * @param orderNo
+     * @param orderStatus
      * @return
      */
     @Override
-    public boolean updateOrderStatusByOrderNo(String orderNo) {
-        return iOrderMapper.updateOrderStatusByOrderNo(orderNo);
+    public boolean updateOrderStatusByOrderNo(String orderNo,Integer orderStatus) {
+        iOrderMapper.updateOrderStatusByOrderNo(orderNo,orderStatus);
+        return true;
     }
 
     /**
@@ -190,7 +229,7 @@ public class OrderServiceImpl implements OrderService {
      * @return
      */
     @Override
-    public Page<Order> findByPage(Order order, Integer currentPage, Integer pageSize) {
+    public Page<Order> findByPage(Order order,List<Integer> orderStatusList, Integer currentPage, Integer pageSize) {
         Pageable pageable = PageRequest.of(currentPage, pageSize);
         Specification<Order> specification = (root, query, criteriaBuilder) ->{
             List<Predicate> list = new ArrayList<>();
@@ -214,6 +253,21 @@ public class OrderServiceImpl implements OrderService {
                 Predicate predicate = criteriaBuilder.equal(root.get("userName").as(String.class), order.getUserName());
                 list.add(predicate);
             }
+            if(order.getProjectNo() != null && !"".equals(order.getProjectNo())){
+                Predicate predicate = criteriaBuilder.equal(root.get("projectNo").as(String.class),order.getProjectNo());
+            }
+
+//            if(order.getOrderStatus() != null && !"".equals(order.getOrderStatus())){
+//                logger.info("添加订单状态条件");
+//                Predicate predicate = criteriaBuilder.equal(root.get("orderStatus").as(String.class), order.getOrderStatus());
+//                list.add(predicate);
+//            }
+
+            if(orderStatusList != null && orderStatusList.size() != 0){
+                Expression<Integer> exp = root.get("orderStatus");
+                list.add(exp.in(orderStatusList));    //在orderStatusList中添加所有id实现in查询
+            }
+
             //new一个数组作为最终返回值的条件
             Predicate[] predicates = new Predicate[list.size()];
             //将list直接转换成数组
@@ -223,5 +277,33 @@ public class OrderServiceImpl implements OrderService {
         };
         //复杂条件查询
         return iOrderMapper.findAll(specification,pageable);
+    }
+
+    @Override
+    public List<Map<String,Integer>> findOrderStatusAndCountByBI() {
+        List<Map<String,Integer>> orderStatusAndCountByBI = iOrderMapper.findOrderStatusAndCountByBI();
+        logger.info(orderStatusAndCountByBI.toString());
+        return orderStatusAndCountByBI;
+    }
+
+    @Override
+    public List<Map<String, Integer>> findLotNameAndCountByBI() {
+        List<Map<String, Integer>> lotNameAndCountByBI = iOrderMapper.findLotNameAndCountByBI();
+        logger.info(lotNameAndCountByBI.toString());
+        return lotNameAndCountByBI;
+    }
+
+    @Override
+    public List<Map<String, Integer>> findKindClassAndCountByBI() {
+        List<Map<String, Integer>> kindClassAndCountByBI = iOrderMapper.findKindClassAndCountByBI();
+        logger.info(kindClassAndCountByBI.toString());
+        return kindClassAndCountByBI;
+    }
+
+    @Override
+    public List<Map<String, Integer>> findUserNameAndCountByBI() {
+        List<Map<String, Integer>> userNameAndCountByBI = iOrderMapper.findUserNameAndCountByBI();
+        logger.info(userNameAndCountByBI.toString());
+        return userNameAndCountByBI;
     }
 }

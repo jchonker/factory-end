@@ -15,7 +15,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author jchonker
@@ -48,7 +51,7 @@ public class OrderController {
 
     @PostMapping("/saveAll")
     @ApiOperation("批量保存订单")
-    public Result saveAll(@RequestBody @Validated(OrderValidationGroups.Insert.class) List<Order> orderList) {
+    public Result saveAll(@RequestBody @Validated(OrderValidationGroups.Insert.class) List<Order> orderList) throws InterruptedException {
         System.out.println("/saveAll");
         System.out.println("参数:"+orderList);
         logger.info("order/saveAll");
@@ -64,6 +67,29 @@ public class OrderController {
         logger.info("参数:"+orderNo);
         Order orderByOrderNo = orderService.findOrderByOrderNo(orderNo);
         return result.Success(orderByOrderNo);
+    }
+
+    @GetMapping("/findOrdersByOrderStatusIn/{orderStatusStr}")
+    @ApiOperation("根据订单状态数组查询,传入数据格式用逗号隔开如: 1,2,3")
+    public Result findOrdersByOrderStatusIn(@PathVariable("orderStatusStr") String orderStatusStr){
+        logger.info("order/findOrdersByOrderStatusIn");
+        logger.info("参数:"+orderStatusStr);
+        //将string转换成int数组
+        String[] split = orderStatusStr.split(",");
+        List<Integer> orderStatuIntList = new ArrayList<>();
+        for (String s : split) {
+            int orderStatusInt = Integer.parseInt(s);
+            orderStatuIntList.add(orderStatusInt);
+        }
+        //将list转换成arr数组
+        Integer[] orderStatuInt = new Integer[orderStatuIntList.size()];
+        System.out.println("转换后的int数组:");
+        orderStatuIntList.toArray(orderStatuInt);
+        String string = Arrays.toString(orderStatuInt);
+        System.out.println(string);
+
+        List<Order> ordersByOrderStatusIn = orderService.findOrdersByOrderStatusIn(orderStatuInt);
+        return result.Success(ordersByOrderStatusIn);
     }
 
     @GetMapping("/findOrderByLotName/{lotName}")
@@ -231,17 +257,35 @@ public class OrderController {
         return result.Success(allByPage);
     }
 
-    @GetMapping("/findByPage/{currentPage}/{pageSize}")
+    @GetMapping("/findByPage/{orderStatusStr}/{currentPage}/{pageSize}")
     @ApiOperation("多条件分页查询")
-    public Result findByPage(@ModelAttribute Order order,@PathVariable("currentPage") Integer currentPage,@PathVariable("pageSize") Integer pageSize){
+    public Result findByPage(@ModelAttribute Order order,@PathVariable String orderStatusStr,@PathVariable("currentPage") Integer currentPage,@PathVariable("pageSize") Integer pageSize){
         logger.info("order/findByPage");
         logger.info("多条件分页查询:");
         logger.info("order:"+order);
         logger.info("currentPage:"+currentPage+" pageSize:"+pageSize);
+
+        //将string转换成int数组
+        String[] split = orderStatusStr.split(",");
+        List<Integer> orderStatuIntList = new ArrayList<>();
+        for (String s : split) {
+            int orderStatusInt = Integer.parseInt(s);
+            orderStatuIntList.add(orderStatusInt);
+        }
+
         //同步前端传回的当前页参数
         Integer currentPageReal = currentPage - 1;
-        Page<Order> byPage = orderService.findByPage(order, currentPageReal, pageSize);
+        Page<Order> byPage = orderService.findByPage(order,orderStatuIntList, currentPageReal, pageSize);
         return result.Success(byPage);
     }
+
+    @PutMapping("/updateOrderStatusByOrderNo/{orderNo}/{orderStatus}")
+    @ApiOperation("根据订单号修改订单状态")
+    public Result updateOrderStatusByOrderNo(@PathVariable String orderNo,@PathVariable Integer orderStatus){
+        orderService.updateOrderStatusByOrderNo(orderNo,orderStatus);
+        return result.Success();
+    }
+
+
 
 }

@@ -10,7 +10,7 @@ import org.springframework.data.repository.CrudRepository;
  * @Version 1.0
  */
 @Mapper
-public interface IColorMapper extends CrudRepository<Color,Integer> {
+public interface ColorMapper extends CrudRepository<Color,Integer> {
 
     /**
      * 根据设备号查询对应颜色数据

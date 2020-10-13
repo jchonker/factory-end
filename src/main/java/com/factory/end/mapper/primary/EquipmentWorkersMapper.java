@@ -14,7 +14,7 @@ import java.util.List;
  * @Version 1.0
  */
 @Mapper
-public interface IEquipmentWorkersMapper extends CrudRepository<EquipmentWorkers,Integer> {
+public interface EquipmentWorkersMapper extends CrudRepository<EquipmentWorkers,Integer> {
 
     /**
      * 根据设备号查询职工编号（根据时间倒序排序取第一条）

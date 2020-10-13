@@ -1,8 +1,10 @@
 package com.factory.end.service.primary.impl;
 
-import com.factory.end.mapper.primary.ISchedulingMapper;
+import com.factory.end.mapper.primary.OrderMapper;
+import com.factory.end.mapper.primary.SchedulingMapper;
 import com.factory.end.model.primary.Scheduling;
 import com.factory.end.service.primary.SchedulingService;
+import com.factory.end.util.OrderStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,10 +13,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.Predicate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @Author jchonker
@@ -26,7 +30,22 @@ public class SchedulingServiceImpl implements SchedulingService {
     Logger logger = LoggerFactory.getLogger(SchedulingServiceImpl.class);
 
     @Autowired
-    private ISchedulingMapper iSchedulingMapper;
+    private SchedulingMapper iSchedulingMapper;
+
+    @Autowired
+    private OrderMapper iOrderMapper;
+
+    @Override
+    public Scheduling findById(Integer id) {
+        Optional<Scheduling> optional = iSchedulingMapper.findById(id);
+        if(optional != null && optional.isPresent()){
+            Scheduling scheduling = optional.get();
+            return scheduling;
+        }
+        else {
+            return null;
+        }
+    }
 
     @Override
     public List<Scheduling> findAll() {
@@ -110,6 +129,22 @@ public class SchedulingServiceImpl implements SchedulingService {
     }
 
     @Override
+    public void deleteById(Integer id) {
+        boolean exists = iSchedulingMapper.existsById(id);
+        if(exists){
+            try {
+                iSchedulingMapper.deleteById(id);
+            } catch (Exception e) {
+                logger.error("根据id删除scheduling表中记录出错!!!");
+                e.printStackTrace();
+            }
+        }
+        else {
+            logger.info("schduling表中不存在id为"+id+"的记录");
+        }
+    }
+
+    @Override
     public boolean existsByUserName(String username) {
         boolean exists = iSchedulingMapper.existsByUserName(username);
         return exists;
@@ -117,18 +152,31 @@ public class SchedulingServiceImpl implements SchedulingService {
 
     @Override
     public void saveScheduling(Scheduling scheduling) {
-         iSchedulingMapper.save(scheduling);
+        Scheduling save = iSchedulingMapper.save(scheduling);
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void saveSchedulings(List<Scheduling> schedulingList) {
+        //保存
         iSchedulingMapper.saveAll(schedulingList);
+        //修改order表中的对应的订单的状态为排单中状态
+        Integer orderStatus = OrderStatus.SCHEDULING;
+        logger.info("要修改的订单状态:"+orderStatus);
+        String orderNo = schedulingList.get(0).getOrderNo();
+        logger.info("订单号:"+orderNo);
+        iOrderMapper.updateOrderStatusByOrderNo(orderNo,orderStatus);
     }
 
     @Override
     public Scheduling findOneByEquipmentNoOrderByManuOrder(String equNo) {
         Scheduling oneByEquipmentNoOrderByManuOrder = iSchedulingMapper.findOneByEquipmentNoOrderByManuOrder(equNo);
-        return oneByEquipmentNoOrderByManuOrder;
+        if(oneByEquipmentNoOrderByManuOrder != null){
+            return oneByEquipmentNoOrderByManuOrder;
+        }
+        else {
+            return null;
+        }
     }
 
     /**

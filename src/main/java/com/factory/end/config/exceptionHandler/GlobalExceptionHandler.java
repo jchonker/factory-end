@@ -28,7 +28,18 @@ public class GlobalExceptionHandler {
     public Result handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         logger.info("进入全局异常处理参数校验方法:");
         logger.error(e.getMessage(), e);
-        return result.Fail(e.getBindingResult().getFieldError().getDefaultMessage());
+        return result.Error(e.getBindingResult().getFieldError().getDefaultMessage());
     }
 
+    /**
+     * 所有类型异常处理
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(Exception.class)
+    public Result handlerMethodMethod(Exception e){
+        logger.info("所有类型异常处理方法");
+        logger.error(e.getMessage(),e);
+        return result.Error(e.getMessage());
+    }
 }

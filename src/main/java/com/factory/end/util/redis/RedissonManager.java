@@ -19,7 +19,7 @@ import javax.annotation.Resource;
  * @Date 2020/8/17 17:25
  * @Version 1.0
  */
-@Component
+//@Component
 public class RedissonManager {
     private final Logger logger = LoggerFactory.getLogger(RedissonManager.class);
 

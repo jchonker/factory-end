@@ -13,7 +13,7 @@ import java.util.List;
  * @Version 1.0
  */
 @Mapper
-public interface IProductHistoryMapper extends CrudRepository<ProductHistory,Integer>, JpaSpecificationExecutor<ProductHistory> {
+public interface ProductHistoryMapper extends CrudRepository<ProductHistory,Integer>, JpaSpecificationExecutor<ProductHistory> {
 
     /**
      * 根据订单号查询

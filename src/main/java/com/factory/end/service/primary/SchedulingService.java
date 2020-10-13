@@ -15,6 +15,13 @@ import java.util.List;
 public interface SchedulingService {
 
     /**
+     * 根据id查询
+     * @param id
+     * @return
+     */
+    Scheduling findById(Integer id);
+
+    /**
      * 查询所有数据
      * @return
      */
@@ -90,6 +97,13 @@ public interface SchedulingService {
      * @return
      */
     Integer deleteByUserName(String username);
+
+    /**
+     * 根据id删除
+     * @param id
+     * @return
+     */
+    void deleteById(Integer id);
 
     /**
      * 根据订单号查询订单是否存在

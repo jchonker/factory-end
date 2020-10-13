@@ -1,6 +1,6 @@
 package com.factory.end.service.primary.impl;
 
-import com.factory.end.mapper.primary.IStatusMapper;
+import com.factory.end.mapper.primary.StatusMapper;
 import com.factory.end.dto.primary.StatusDto;
 import com.factory.end.model.primary.Status;
 import com.factory.end.service.primary.StatusService;
@@ -22,7 +22,7 @@ public class StatusServiceImpl implements StatusService {
     Logger logger = LoggerFactory.getLogger(StatusServiceImpl.class);
 
     @Autowired
-    private IStatusMapper iStatusMapper;
+    private StatusMapper iStatusMapper;
 
     @Override
     public List<Status> findAll() {

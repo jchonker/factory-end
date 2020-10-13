@@ -2,6 +2,7 @@ package com.factory.end.mapper.primary;
 
 import com.factory.end.model.primary.Workers;
 import org.apache.ibatis.annotations.Mapper;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.CrudRepository;
 
 /**
@@ -10,6 +11,6 @@ import org.springframework.data.repository.CrudRepository;
  * @Version 1.0
  */
 @Mapper
-public interface IWorkersMapper extends CrudRepository<Workers,String> {
+public interface WorkersMapper extends CrudRepository<Workers,String>, JpaSpecificationExecutor<Workers> {
 
 }

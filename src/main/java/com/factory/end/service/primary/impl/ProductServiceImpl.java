@@ -1,11 +1,14 @@
 package com.factory.end.service.primary.impl;
 
-import com.factory.end.mapper.primary.IOrderMapper;
-import com.factory.end.mapper.primary.IProductMapper;
-import com.factory.end.mapper.primary.ISchedulingMapper;
+import com.factory.end.mapper.primary.OrderMapper;
+import com.factory.end.mapper.primary.ProductMapper;
+import com.factory.end.mapper.primary.ProjectDetailsMapper;
+import com.factory.end.mapper.primary.SchedulingMapper;
 import com.factory.end.model.primary.Product;
 import com.factory.end.model.primary.Scheduling;
 import com.factory.end.service.primary.ProductService;
+import com.factory.end.util.OrderStatus;
+import com.factory.end.util.ProjectStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,13 +36,16 @@ public class ProductServiceImpl implements ProductService {
     Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
 
     @Autowired
-    private IProductMapper iProductMapper;
+    private ProductMapper iProductMapper;
 
     @Autowired
-    private ISchedulingMapper schedulingMapper;
+    private SchedulingMapper schedulingMapper;
 
     @Autowired
-    private IOrderMapper orderMapper;
+    private OrderMapper orderMapper;
+
+    @Autowired
+    private ProjectDetailsMapper projectDetailsMapper;
 
     /**
      * 获取生产号no
@@ -51,7 +57,7 @@ public class ProductServiceImpl implements ProductService {
         //延迟1毫秒，防止获取到相同的时间戳
         Thread.sleep(1);
         //Product首字母字母+时间戳
-        return "F"+System.currentTimeMillis();
+        return "P"+System.currentTimeMillis();
     }
 
     @Override
@@ -104,18 +110,31 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
-    public Product saveProductByOrderNo(String orderNo) {
-        //1:根据订单号从scheduling表中查询出此条记录返回Scheduling类
-        Scheduling scheduling = schedulingMapper.findByOrderNo(orderNo);
-        //2:根据订单号从scheduling表中删除此条数据
-        schedulingMapper.deleteByOrderNo(orderNo);
-        //3:将查询出的Schduling类相应的字段填充到一个Product对象中
+    @Transactional(rollbackFor = Exception.class)
+    public Product saveProductBySchdulingId(Integer id,Integer lastSchedulingOfOrder) {
+        logger.info("1):根据表id从scheduling表中查询出此条记录返回Scheduling类");
+        Scheduling scheduling = schedulingMapper.findById(id).get();
+        logger.info("2):根据表id从scheduling表中删除此条数据");
+        schedulingMapper.deleteById(id);
+        logger.info("3):将查询出的Schduling类相应的字段填充到一个Product对象中");
         Product product = SchedulingToProduct(scheduling);
-        //4:将Product对象插入到Product表中
+        logger.info("设置是否是最后一条数据");
+        product.setLastSchedulingOfOrder(lastSchedulingOfOrder);
+        logger.info("4):将Product对象插入到Product表中");
+        logger.info(product.toString());
         Product saveProduct = iProductMapper.save(product);
-        //5:修改order表中的Order_Status为[生产中]状态
-        orderMapper.updateOrderStatusByOrderNo(orderNo);
+        logger.info("5):修改order表中的Order_Status为[生产中]状态");
+        int orderStatus = OrderStatus.WAITPRODUCE;
+        orderMapper.updateOrderStatusByOrderNo(scheduling.getOrderNo(),orderStatus);
+        logger.info("6):按照scheduling表中的order_no在order表中查询出project_no");
+        String projectNo = orderMapper.findOrderByOrderNo(scheduling.getOrderNo()).getProjectNo();
+        if(projectNo == null || "".equals(projectNo)){
+            throw new RuntimeException("此订单没有关联到项目号");
+        }
+        logger.info("projectNo:"+projectNo);
+        logger.info("7):修改pro_Project_Details表中project_status为[生产中状态]");
+        Integer projectStatus = ProjectStatus.INPRODUCT;
+        projectDetailsMapper.updateProjectStatusByProjectNo(projectNo,projectStatus.toString());
         return saveProduct;
     }
 
@@ -143,13 +162,34 @@ public class ProductServiceImpl implements ProductService {
         product.setCollectValue(0);
         product.setOkValue(0);
         product.setNgValue(0);
-        product.setCompProductProgress("0%");
+        product.setCompProductProgress("0");
         //先设置预期完成时间为2个小时后
-        product.setCompExpectDate(simpleDateFormat.format(new Date(System.currentTimeMillis()+7200)));
+        //product.setCompExpectDate(simpleDateFormat.format(new Date(System.currentTimeMillis()+7200)));
+        //设置预期完成时间为实际生产数的所消耗的时间
+        product.setCompExpectDate(getCompExceptDate(scheduling.getTargetValue()));
         //生产完成时间不用此时不用设值
         //设值更新日期时间为当前时间
         product.setLastUpdate(time);
+        //设置订单状态
+        product.setOrderStatus(OrderStatus.PRODUCING);
+        //设置用户名
+        product.setUserName(scheduling.getUserName());
         return product;
+    }
+
+    /**
+     * 获取系统预期完成时间
+     * @param targetValue 目标产量
+     * @return
+     */
+    public synchronized String getCompExceptDate(Integer targetValue){
+        long timeMillis = System.currentTimeMillis();
+        long compTimeMillis = timeMillis + 5 * 1000 * targetValue;
+        Date date = new Date(compTimeMillis);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String compExceptionDateStr = simpleDateFormat.format(date);
+        logger.info("获取系统预期完成时间:"+compExceptionDateStr);
+        return compExceptionDateStr;
     }
 
     @Override
@@ -159,7 +199,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public List<Product> saveProductsByOrderNoList(List<String> orderNoList) {
         //1:根据订单号从scheduling表中查询出此条记录返回Scheduling类
         List<Scheduling> schedulingList = new ArrayList<Scheduling>();
@@ -178,8 +218,9 @@ public class ProductServiceImpl implements ProductService {
         //4:将Product对象插入到Product表中
         iProductMapper.saveAll(productList);
         //5:修改order表中的Order_Status为[生产中]状态
+        int orderStatus = OrderStatus.WAITPRODUCE;
         for(String orderNo:orderNoList){
-            orderMapper.updateOrderStatusByOrderNo(orderNo);
+            orderMapper.updateOrderStatusByOrderNo(orderNo,orderStatus);
         }
         return productList;
     }
@@ -193,6 +234,12 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public boolean existsByOrderNo(String orderNo) {
         boolean exists = iProductMapper.existsByOrderNo(orderNo);
+        return exists;
+    }
+
+    @Override
+    public boolean existsByProductNo(String productNo) {
+        boolean exists = iProductMapper.existsByProductNo(productNo);
         return exists;
     }
 
@@ -232,5 +279,26 @@ public class ProductServiceImpl implements ProductService {
         };
         //复杂条件查询
         return iProductMapper.findAll(specification,pageable);
+    }
+
+    @Override
+    public void updateCollectValueByProductNo(String productNo,Integer collectValue) {
+        iProductMapper.updateCollectValueByProductNo(productNo,collectValue);
+    }
+
+    @Override
+    public void updateOrderStatusByProductNo(String productNo, Integer orderStatus) {
+        iProductMapper.updateOrderStatusByProductNo(productNo,orderStatus);
+    }
+
+    @Override
+    public void updateCompProductDateByProductNo(String productNo, String compProductDate) {
+        iProductMapper.updateCompProductDateByProductNo(productNo,compProductDate);
+    }
+
+    @Override
+    public Integer findCountByOrderNo(String orderNo) {
+        Integer countByOrderNo = iProductMapper.findCountByOrderNo(orderNo);
+        return countByOrderNo;
     }
 }

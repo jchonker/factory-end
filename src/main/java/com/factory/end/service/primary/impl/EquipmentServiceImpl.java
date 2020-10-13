@@ -1,7 +1,7 @@
 package com.factory.end.service.primary.impl;
 
 import com.factory.end.dto.primary.EquipmentDto;
-import com.factory.end.mapper.primary.IEquipmentMapper;
+import com.factory.end.mapper.primary.EquipmentMapper;
 import com.factory.end.model.primary.Equipment;
 import com.factory.end.service.primary.EquipmentService;
 import org.slf4j.Logger;
@@ -22,36 +22,48 @@ public class EquipmentServiceImpl implements EquipmentService {
     Logger logger = LoggerFactory.getLogger(EquipmentServiceImpl.class);
 
     @Autowired
-    private IEquipmentMapper iEquipmentMapper;
+    private EquipmentMapper equipmentMapper;
 
     @Override
     public List<Equipment> findAll() {
         List<EquipmentDto> equipmentDtos = new ArrayList<>();
-        Iterable<Equipment> iEquipmentMapperAll = iEquipmentMapper.findAll();
+        Iterable<Equipment> iEquipmentMapperAll = equipmentMapper.findAll();
         return (List<Equipment>) iEquipmentMapperAll;
 
-//        EquipmentDto equipmentDto;
-//        if(iEquipmentMapperAll!=null){
-//            logger.info(iEquipmentMapperAll.toString());
-//            for(Equipment equipment:iEquipmentMapperAll){
-//                equipmentDto = entityToDto(equipment);
-//                equipmentDtos.add(equipmentDto);
-//            }
-//            return equipmentDtos;
-//        }
-//        return null;
     }
 
-    /**
-     * Status转换成StatusDto类
-     * @param equipment
-     * @return
-     */
-//    private EquipmentDto entityToDto(Equipment equipment){
-//        EquipmentDto equipmentDto = new EquipmentDto();
-//        equipmentDto.setEquipmentName(equipment.getEquipmentName());
-//        equipmentDto.setEquipmentNo(equipment.getEquipmentNo());
-//        equipmentDto.setProductionType(equipment.getProductionType());
-//        return equipmentDto;
-//    }
+
+    @Override
+    public List<Equipment> findAllOfLeisure() {
+        List<Equipment> allOfLeisure = equipmentMapper.findAllOfLeisure();
+        logger.info("空闲的设备记录:");
+        logger.info(allOfLeisure.toString());
+        return allOfLeisure;
+    }
+
+    @Override
+    public void save(Equipment equipment) {
+        equipmentMapper.save(equipment);
+    }
+
+    @Override
+    public void updateEquStatusByEquNo(String equNo, Integer equStatus) {
+        logger.info("service....根据设备号修改状态");
+        logger.info("equNo:"+equNo+" equStatus:"+equStatus);
+        equipmentMapper.updateEquStatusByEquNo(equNo,equStatus);
+    }
+
+    @Override
+    public void updateAllowProduct(String equNo, Integer allowProduct) {
+        logger.info("service...根据设备号修改是否允许生产");
+        logger.info("equNo:"+equNo+" allowProduct:"+allowProduct);
+        equipmentMapper.updateAllowProduct(equNo,allowProduct);
+    }
+
+    @Override
+    public List<Equipment> findAllByAllStatus(Integer equStatus, Integer allowProduct, Integer autoModel) {
+        List<Equipment> allByAllStatus = equipmentMapper.findAllByAllStatus(equStatus, allowProduct, autoModel);
+        logger.info(allByAllStatus.toString());
+        return allByAllStatus;
+    }
 }

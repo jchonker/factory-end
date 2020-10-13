@@ -115,4 +115,10 @@ public class Order {
      */
     @Column(name = "Comp_Order_Date")
     private String compOrderDate;
+
+    /**
+     * 关联项目编号
+     */
+    @Column(name = "Project_No")
+    private String projectNo;
 }

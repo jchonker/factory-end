@@ -2,15 +2,18 @@ package com.factory.end.mapper.primary;
 
 import com.factory.end.model.primary.Order;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
+import org.aspectj.weaver.ast.Or;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author jchonker
@@ -19,7 +22,7 @@ import java.util.List;
  * JpaSpecificationExecutor做复杂查询
  */
 @Mapper
-public interface IOrderMapper extends CrudRepository<Order,Integer>, JpaSpecificationExecutor<Order> {
+public interface OrderMapper extends CrudRepository<Order,Integer>, JpaSpecificationExecutor<Order> {
     /**
      * 分页查询
      * @param pageable
@@ -34,6 +37,13 @@ public interface IOrderMapper extends CrudRepository<Order,Integer>, JpaSpecific
      * @return
      */
     Order findOrderByOrderNo(String orderNo);
+
+    /**
+     * 根据订单状态数组查询
+     * @param orderStatusArr
+     * @return
+     */
+    List<Order> findOrdersByOrderStatusIn(Integer[] orderStatusArr);
 
     /**
      * 根据产品名查询
@@ -114,8 +124,39 @@ public interface IOrderMapper extends CrudRepository<Order,Integer>, JpaSpecific
     /**
      * 根据订单号修改订单状态
      * @param orderNo
+     * @param orderStatus
      * @return
      */
-    @Query(value = "update Order_Status from pro_Order where Order_No = :orderNo",nativeQuery = true)
-    boolean updateOrderStatusByOrderNo(@Param("orderNo") String orderNo);
+    @Transactional(rollbackFor = Exception.class)
+    @Modifying
+    @Query(value = "update pro_Order set Order_Status = :orderStatus where Order_No = :orderNo",nativeQuery = true)
+    void updateOrderStatusByOrderNo(@Param("orderNo") String orderNo, @Param("orderStatus") Integer orderStatus);
+
+    /**
+     * BI查询
+     * @return 返回订单状态和其数量
+     */
+    @Query(value = "select (SELECT pro_status_value FROM pro_Order_Status where pro_status_id = po.Order_Status) as 'name',COUNT(po.Order_Status)as 'value' from pro_Order po GROUP BY Order_Status",nativeQuery = true)
+    List<Map<String,Integer>> findOrderStatusAndCountByBI();
+
+    /**
+     * BI查询
+     * @return 返回产品名和其数量
+     */
+    @Query(value = "select Lot_Name as 'name',count(Lot_Name) as 'value' from pro_Order GROUP BY Lot_Name",nativeQuery = true)
+    List<Map<String,Integer>> findLotNameAndCountByBI();
+
+    /**
+     * BI查询
+     * @return 返回产品类型和其数量
+     */
+    @Query(value = "select Kind_Class as 'name', COUNT(Kind_Class) as 'value' from pro_Order GROUP BY Kind_Class",nativeQuery = true)
+    List<Map<String,Integer>> findKindClassAndCountByBI();
+
+    /**
+     * BI查询
+     * @return 返回下单人员名和其数量
+     */
+    @Query(value = "select User_Name as 'name', COUNT(User_Name) as 'value' from pro_Order GROUP BY User_Name",nativeQuery = true)
+    List<Map<String,Integer>> findUserNameAndCountByBI();
 }

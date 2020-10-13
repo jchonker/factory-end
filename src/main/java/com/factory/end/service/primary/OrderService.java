@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Author jchonker
@@ -25,7 +26,7 @@ public interface OrderService {
      * 批量插入
      * @param orderList
      */
-    void saveAll(List<Order> orderList);
+    void saveAll(List<Order> orderList) throws InterruptedException;
 
     /**
      * 根据订单编号查询
@@ -33,6 +34,13 @@ public interface OrderService {
      * @return
      */
     Order findOrderByOrderNo(String orderNo);
+
+    /**
+     * 根据订单状态数组查询
+     * @param orderStatusArr
+     * @return
+     */
+    List<Order> findOrdersByOrderStatusIn(Integer[] orderStatusArr);
 
     /**
      * 根据产品名查询
@@ -137,16 +145,42 @@ public interface OrderService {
     /**
      * 根据订单号修改订单状态
      * @param orderNo
+     * @param  orderStatus
      * @return
      */
-    boolean updateOrderStatusByOrderNo(String orderNo);
+    boolean updateOrderStatusByOrderNo(String orderNo,Integer orderStatus);
 
     /**
      * 复杂条件分页查询
      * @param order
+     * @param orderStatusList
      * @param currentPage
      * @param pageSize
      * @return
      */
-    Page<Order> findByPage(Order order, Integer currentPage, Integer pageSize);
+    Page<Order> findByPage(Order order,List<Integer> orderStatusList, Integer currentPage, Integer pageSize);
+
+    /**
+     * BI查询
+     * @return 返回订单状态和其数量
+     */
+    List<Map<String,Integer>> findOrderStatusAndCountByBI();
+
+    /**
+     * BI查询
+     * @return 返回产品名和其数量
+     */
+    List<Map<String,Integer>> findLotNameAndCountByBI();
+
+    /**
+     * BI查询
+     * @return 返回产品类型和其数量
+     */
+    List<Map<String,Integer>> findKindClassAndCountByBI();
+
+    /**
+     * BI查询
+     * @return 返回下单人员名和其数量
+     */
+    List<Map<String,Integer>> findUserNameAndCountByBI();
 }

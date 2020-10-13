@@ -11,7 +11,7 @@ import java.util.concurrent.TimeUnit;
  * @Date 2020/8/17 17:28
  * @Version 1.0
  */
-@Component
+//@Component
 public class DistributedRedisLock {
     /**
      * 从配置类中获取redisson对象

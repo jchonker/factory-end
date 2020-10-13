@@ -115,4 +115,10 @@ public class Product {
      */
     @Column(name = "Comp_Product_Date")
     private String compProductDate;
+
+    /**
+     * 是否是大订单中最后一个分订单,用于判断删除order表中的记录。0:否 1:是
+     */
+    @Column(name = "Last_Scheduling_Of_Order")
+    Integer lastSchedulingOfOrder;
 }

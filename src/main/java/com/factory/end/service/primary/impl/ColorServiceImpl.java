@@ -1,6 +1,6 @@
 package com.factory.end.service.primary.impl;
 
-import com.factory.end.mapper.primary.IColorMapper;
+import com.factory.end.mapper.primary.ColorMapper;
 import com.factory.end.model.primary.Color;
 import com.factory.end.service.primary.ColorService;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ public class ColorServiceImpl implements ColorService {
     Logger logger = LoggerFactory.getLogger(ColorServiceImpl.class);
 
     @Autowired
-    private IColorMapper iColorMapper;
+    private ColorMapper iColorMapper;
 
     /**
      * 根据设备号查询颜色

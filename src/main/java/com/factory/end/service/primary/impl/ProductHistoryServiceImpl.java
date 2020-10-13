@@ -1,7 +1,6 @@
 package com.factory.end.service.primary.impl;
 
-import com.factory.end.mapper.primary.IProductHistoryMapper;
-import com.factory.end.mapper.primary.IProductMapper;
+import com.factory.end.mapper.primary.ProductHistoryMapper;
 import com.factory.end.model.primary.ProductHistory;
 import com.factory.end.service.primary.ProductHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,7 @@ import java.util.List;
 @Service
 public class ProductHistoryServiceImpl implements ProductHistoryService {
     @Autowired
-    private IProductHistoryMapper iProductHistoryMapper;
+    private ProductHistoryMapper iProductHistoryMapper;
 
     @Override
     public List<ProductHistory> findAll() {

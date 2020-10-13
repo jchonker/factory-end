@@ -4,6 +4,7 @@ import com.factory.end.model.primary.Product;
 import com.factory.end.service.primary.ProductService;
 import com.factory.end.util.http.Result;
 import com.factory.end.util.validate.ProductValidationGroups;
+import com.sun.org.apache.regexp.internal.RE;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -32,6 +33,13 @@ public class ProductController {
 
     @Autowired
     private Result result;
+
+    @GetMapping("/existsByProductNo/{productNo}")
+    @ApiOperation("根据产品号查询订单是否存在")
+    public Result existsByProductNo(@PathVariable String productNo){
+        boolean exists = productService.existsByProductNo(productNo);
+        return result.Success("订单存在");
+    }
 
     /**
      * 查询所有
@@ -153,5 +161,38 @@ public class ProductController {
         Integer currentPageReal = currentPage - 1;
         Page<Product> byPage = productService.findByPage(product, currentPageReal, pageSize);
         return result.Success(byPage);
+    }
+
+    @PutMapping("/updateCollectValueByProductNo/{productNo}/{collectValue}")
+    @ApiOperation("根据生产号修改生产值")
+    public Result updateCollectValueByProductNo( @PathVariable String productNo,@PathVariable Integer collectValue){
+        boolean exists = productService.existsByProductNo(productNo);
+        if(exists){
+            productService.updateCollectValueByProductNo(productNo,collectValue);
+            return result.Success();
+        }
+        else {
+            return result.Fail("此订单不存在!");
+        }
+    }
+
+    @PutMapping("/updateCompProductDateByProductNo/{productNo}/{compProductDate}")
+    @ApiOperation("根据产品号修改订单完成时间")
+    public Result updateCompProductDateByProductNo(@PathVariable String productNo,@PathVariable String compProductDate){
+        boolean exists = productService.existsByProductNo(productNo);
+        if(exists){
+            productService.updateCompProductDateByProductNo(productNo,compProductDate);
+            return result.Success();
+        }
+        else {
+            return result.Fail("此订单不存在");
+        }
+    }
+
+    @GetMapping("/findCountByOrderNo/{orderNo}")
+    @ApiOperation(("根据订单号查询记录数量"))
+    public Result findCountByOrderNo(@PathVariable String orderNo){
+        Integer countByOrderNo = productService.findCountByOrderNo(orderNo);
+        return result.Success(countByOrderNo);
     }
 }

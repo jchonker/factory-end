@@ -10,7 +10,7 @@ import javax.persistence.*;
  * @Version 1.0
  */
 @Data
-@Table(name = "pro_Status")
+@Table(name = "pro_Workers")
 @Entity
 public class Workers {
 
@@ -24,11 +24,23 @@ public class Workers {
      * 使用String类型作主键
      */
     @Column(name = "Workers_No")
-    private String Workers_No;
+    private String workersNo;
 
     /**
      * 职工名
      */
     @Column(name = "Workers_Name")
-    private String Workers_Name;
+    private String workersName;
+
+    /**
+     * 职工状态
+     */
+    @Column(name = "Workers_Status")
+    private Integer workersStatus;
+
+    /**
+     * 上线时间
+     */
+    @Column(name = "Workers_Time")
+    private String workersTime;
 }

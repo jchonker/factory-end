@@ -1,7 +1,6 @@
 package com.factory.end.service.primary.impl;
 
-import com.factory.end.mapper.primary.IEquipmentMapper;
-import com.factory.end.mapper.primary.IEquipmentWorkersMapper;
+import com.factory.end.mapper.primary.EquipmentWorkersMapper;
 import com.factory.end.model.primary.EquipmentWorkers;
 import com.factory.end.service.primary.EquipmentWorkersService;
 import org.slf4j.Logger;
@@ -21,7 +20,7 @@ public class EquipmentWorkersServiceImpl implements EquipmentWorkersService {
     Logger logger = LoggerFactory.getLogger(EquipmentWorkersServiceImpl.class);
 
     @Autowired
-    private IEquipmentWorkersMapper iEquipmentWorkersMapper;
+    private EquipmentWorkersMapper iEquipmentWorkersMapper;
 
     /**
      * 根据设备号查询职工编号（根据时间倒序排序取第一条）

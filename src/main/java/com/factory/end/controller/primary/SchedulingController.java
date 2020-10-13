@@ -33,6 +33,23 @@ public class SchedulingController {
     Result result;
 
     /**
+     * 根据id查询
+     * @param id
+     * @return
+     */
+    @GetMapping("/findById/{id}")
+    @ApiOperation("根据id查询")
+    public Result findById(@PathVariable Integer id){
+        Scheduling scheduling = schedulingService.findById(id);
+        if(scheduling != null){
+            return result.Success(scheduling);
+        }
+        else {
+            return result.Fail("无数据");
+        }
+    }
+
+    /**
      * 查询所有
      * @return
      */
@@ -285,5 +302,31 @@ public class SchedulingController {
         Integer currentPageReal = currentPage - 1;
         Page<Scheduling> byPage = schedulingService.findByPage(scheduling, currentPage, pageSize);
         return result.Success(byPage);
+    }
+
+    @GetMapping("/findOneByEquipmentNoOrderByManuOrder/{equNo}")
+    @ApiOperation("根据顺序排序根据设备号查询查询第1条记录")
+    public Result findOneByEquipmentNoOrderByManuOrder(@PathVariable String equNo){
+        logger.info("/order/findOneByEquipmentNoOrderByManuOrder");
+        logger.info("equNo"+equNo);
+        Scheduling oneByEquipmentNoOrderByManuOrder = schedulingService.findOneByEquipmentNoOrderByManuOrder(equNo);
+        if(oneByEquipmentNoOrderByManuOrder != null){
+            return result.Success(oneByEquipmentNoOrderByManuOrder);
+        }
+        else {
+            return result.Fail("没有对应的记录!");
+        }
+    }
+
+    @DeleteMapping("/deleteById/{id}")
+    @ApiOperation("根据id删除记录")
+    public Result deleteById(@PathVariable Integer id){
+        try {
+            schedulingService.deleteById(id);
+            return result.Success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return result.Error();
+        }
     }
 }
