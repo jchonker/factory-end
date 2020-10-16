@@ -123,6 +123,12 @@ public class Order {
     private String projectNo;
 
     /**
+     * 关联项目名称
+     */
+    @Column(name = "Project_Name")
+    private String projectName;
+
+    /**
      * 品牌
      */
     @Column(name = "Brand")

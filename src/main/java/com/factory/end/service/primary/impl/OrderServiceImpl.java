@@ -255,6 +255,11 @@ public class OrderServiceImpl implements OrderService {
             }
             if(order.getProjectNo() != null && !"".equals(order.getProjectNo())){
                 Predicate predicate = criteriaBuilder.equal(root.get("projectNo").as(String.class),order.getProjectNo());
+                list.add(predicate);
+            }
+            if(order.getProjectName() != null && !"".equals(order.getProjectName())){
+                Predicate predicate = criteriaBuilder.equal(root.get("projectName").as(String.class), order.getProjectName());
+                list.add(predicate);
             }
 
 //            if(order.getOrderStatus() != null && !"".equals(order.getOrderStatus())){
