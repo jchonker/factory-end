@@ -306,4 +306,11 @@ public class OrderServiceImpl implements OrderService {
         logger.info(userNameAndCountByBI.toString());
         return userNameAndCountByBI;
     }
+
+    @Override
+    public List<Map<String, Map<String, Integer>>> findOrdersGroupByBrand() {
+        List<Map<String, Map<String, Integer>>> ordersGroupByBrand = iOrderMapper.findOrdersGroupByBrand();
+        logger.info(ordersGroupByBrand.toString());
+        return ordersGroupByBrand;
+    }
 }

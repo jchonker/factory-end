@@ -9,13 +9,13 @@ import javax.validation.constraints.NotNull;
 
 /**
  * @Author jchonker
- * @Date 2020/8/26 13:50
+ * @Date 2020/10/16 14:29
  * @Version 1.0
  */
 @Data
-@Table(name = "pro_Order")
+@Table(name = "pro_Order_History")
 @Entity
-public class Order {
+public class OrderHistory {
     @NotNull(groups = OrderValidationGroups.Update.class, message = "id值不能为空")
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

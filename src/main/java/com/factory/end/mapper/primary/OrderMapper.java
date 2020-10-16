@@ -159,4 +159,11 @@ public interface OrderMapper extends CrudRepository<Order,Integer>, JpaSpecifica
      */
     @Query(value = "select User_Name as 'name', COUNT(User_Name) as 'value' from pro_Order GROUP BY User_Name",nativeQuery = true)
     List<Map<String,Integer>> findUserNameAndCountByBI();
+
+    /**
+     * 根据品牌分组查询
+     * @return
+     */
+    @Query(value = "select Brand,Lot_Name,count(*) as count from pro_Order group by Lot_Name,Brand",nativeQuery = true)
+    List<Map<String,Map<String,Integer>>> findOrdersGroupByBrand();
 }

@@ -183,4 +183,10 @@ public interface OrderService {
      * @return 返回下单人员名和其数量
      */
     List<Map<String,Integer>> findUserNameAndCountByBI();
+
+    /**
+     * 根据品牌分组查询
+     * @return
+     */
+    List<Map<String,Map<String,Integer>>> findOrdersGroupByBrand();
 }

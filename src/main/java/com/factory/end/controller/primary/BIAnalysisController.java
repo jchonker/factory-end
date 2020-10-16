@@ -63,4 +63,10 @@ public class BIAnalysisController {
         return result.Success(userNameAndCountByBI);
     }
 
+    @GetMapping("/order/findOrdersGroupByBrand")
+    @ApiOperation("品牌分组查询")
+    public Result findOrdersGroupByBrand(){
+        List<Map<String, Map<String, Integer>>> ordersGroupByBrand = orderService.findOrdersGroupByBrand();
+        return result.Success(ordersGroupByBrand);
+    }
 }
