@@ -1,14 +1,15 @@
 package com.factory.end.mapper.second;
 
-import com.factory.end.model.second.MyEquipment;
+import com.factory.end.model.second.DyInternalHistory;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.data.repository.CrudRepository;
 
 /**
  * @Author jchonker
- * @Date 2020/8/14 9:42
+ * @Date 2020/8/13 10:04
  * @Version 1.0
  */
 @Mapper
-public interface IMyEquipmentMapper extends CrudRepository<MyEquipment,Integer> {
+public interface DyInternalHistoryMapper extends CrudRepository<DyInternalHistory,Integer> {
+
 }

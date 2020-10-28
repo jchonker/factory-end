@@ -96,6 +96,15 @@ public class Result implements Serializable {
     }
 
     /**
+     * 返回http状态
+     * @param httpStatusEnum
+     * @return
+     */
+    public Result Enum(HttpStatusEnum httpStatusEnum){
+        return new Result(httpStatusEnum.code()+"",httpStatusEnum.reasonPhraseUS(),httpStatusEnum.reasonPhraseCN());
+    }
+
+    /**
      * 带业务数据的成功返回数据
      * @param data
      * @return

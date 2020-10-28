@@ -22,7 +22,7 @@ import java.io.IOException;
  * @Version 1.0
  * 退出成功的处理类
  */
-@Component
+//@Component
 public class MyLogoutSuccessHandler implements LogoutSuccessHandler {
 //    @Autowired
 //    private TokenStore tokenStore;

@@ -1,6 +1,6 @@
 package com.factory.end.service.second.impl;
 
-import com.factory.end.mapper.second.IMyEquipmentMapper;
+import com.factory.end.mapper.second.MyEquipmentMapper;
 import com.factory.end.dto.second.MyEquipmentDto;
 import com.factory.end.model.second.MyEquipment;
 import com.factory.end.service.second.MyEquipmentService;
@@ -18,7 +18,7 @@ import java.util.List;
 @Service
 public class MyEquipmentServiceImpl implements MyEquipmentService {
     @Autowired
-    private IMyEquipmentMapper iMyEquipmentMapper;
+    private MyEquipmentMapper iMyEquipmentMapper;
 
     @Override
     public List<MyEquipmentDto> findAll() {

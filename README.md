@@ -19,3 +19,11 @@ var value = $(this).parents("tr").children("td").eq(1).text();
 #https://zhuanlan.zhihu.com/p/97555913
 #分组校验
 #https://blog.csdn.net/ABIGJUN/article/details/97425805
+
+springboot+springsecurity+jwt+redis
+
+
+ROLE_HIGHUSER,ROLE_USER
+
+SpringSecurity--角色继承、动态权限
+https://blog.csdn.net/cold___play/article/details/104221492

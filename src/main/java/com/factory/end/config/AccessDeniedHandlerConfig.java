@@ -17,7 +17,7 @@ import java.io.PrintWriter;
  * @Date 2020/8/23 0:44
  * @Version 1.0
  */
-@Configuration
+//@Configuration
 public class AccessDeniedHandlerConfig implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException, ServletException {
@@ -28,14 +28,14 @@ public class AccessDeniedHandlerConfig implements AccessDeniedHandler {
 //        out.flush();
 //        out.close();
 
-        // Put exception into request scope (perhaps of use to a view)
-        httpServletRequest.setAttribute(WebAttributes.ACCESS_DENIED_403, e);
-
-        // Set the 403 status code.
-        httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-
-        // forward to error page.
-        RequestDispatcher dispatcher = httpServletRequest.getRequestDispatcher("/login");
-        dispatcher.forward(httpServletRequest, httpServletResponse);
+//        // Put exception into request scope (perhaps of use to a view)
+//        httpServletRequest.setAttribute(WebAttributes.ACCESS_DENIED_403, e);
+//
+//        // Set the 403 status code.
+//        httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+//
+//        // forward to error page.
+//        RequestDispatcher dispatcher = httpServletRequest.getRequestDispatcher("/login");
+//        dispatcher.forward(httpServletRequest, httpServletResponse);
     }
 }

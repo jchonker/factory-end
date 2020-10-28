@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletResponse;
  * @Version 1.0
  * 退出处理类
  */
-@Component
+//@Component
 public class MyLogoutHandler implements LogoutHandler {
     @Override
     public void logout(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, Authentication authentication) {

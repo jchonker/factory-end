@@ -1,7 +1,7 @@
 package com.factory.end.service;
 
 import com.factory.end.dto.second.UserDto;
-import com.factory.end.service.second.UserService;
+import com.factory.end.service.primary.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
@@ -40,6 +40,7 @@ public class MyUserDetailsService implements UserDetailsService {
         //AuthorityUtils.commaSeparatedStringToAuthorityList是Spring Security提供的,该方法用于将逗号隔开的权限集字符串切割为可用的权限对象列表
         //当然也可以自己实现,如用分号隔离开,参考generateAuthorities
         userDto.setAuthorities(AuthorityUtils.commaSeparatedStringToAuthorityList(userDto.getRoles()));
+        //AuthorityUtils.createAuthorityList(new String[]{"bhcsdv","fwefe","werw332r","qdwsfsd"});
         System.out.println("填充authorityList后的userDto:"+userDto);
         return userDto;
     }

@@ -1,15 +1,21 @@
 package com.factory.end.config;
 
+import com.factory.end.config.jwt.JWTAuthenticationFilter;
+import com.factory.end.config.jwt.JWTAuthorizationFilter;
 import com.factory.end.service.MyUserDetailsService;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchy;
+import org.springframework.security.access.hierarchicalroles.RoleHierarchyImpl;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +24,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @Author jchonker
  * @Date 2020/8/21 14:38
  * @Version 1.0
+ * 使用参考：
+ * https://blog.csdn.net/I_am_Hutengfei/article/details/100561564
  */
 @Configuration
 @EnableWebSecurity
@@ -25,8 +33,32 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private MyUserDetailsService myUserDetailsService;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private CustomizeAuthenticationEntryPoint customizeAuthenticationEntryPoint;
+
+    @Autowired
+    private CustomizeAuthenticationSuccessHandler customizeAuthenticationSuccessHandler;
+
+    @Autowired
+    private CustomizeAuthenticationFailureHandler customizeAuthenticationFailureHandler;
+
+    @Autowired
+    private CustomizeLogoutSuccessHandler customizeLogoutSuccessHandler;
+
+    @Autowired
+    CustomizeSessionInformationExpiredStrategy customizeSessionInformationExpiredStrategy;
+
+    /**
+     * jwt相关bean
+     */
 //    @Autowired
-//    private PasswordEncoder passwordEncoder;
+//    JWTAuthenticationFilter jwtAuthenticationFilter;
+//
+//    @Autowired
+//    JWTAuthorizationFilter jwtAuthorizationFilter;
 
     @Bean
     @Override
@@ -40,25 +72,110 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return myUserDetailsService;
     }
 
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http
+//                //关闭csrf防护
+//                .csrf().disable()
+//                .headers().frameOptions().disable();
+//        http.authorizeRequests()
+//                //登录接口放行
+//                .antMatchers("/login").permitAll()
+//                //swagger接口文档地址放行
+//                .antMatchers(
+//                        "/webjars/**",
+//                        "/resources/**",
+//                        "/swagger-ui.html",
+//                        "/swagger-resources/**",
+//                        "/v2/api-docs")
+//                .permitAll()
+//                //.antMatchers("/login_success").permitAll()
+//                //.antMatchers("/login_fail").permitAll()
+//                .antMatchers("/**").hasRole("ADMIN")
+////                .anyRequest().authenticated()
+//                .and()
+//                //用户未登录获取登录状态过期失效处理
+//                .exceptionHandling().
+//                authenticationEntryPoint(customizeAuthenticationEntryPoint)
+//                //登录
+//                .and().
+//                    formLogin().
+//                    //允许所有用户
+//                    permitAll().
+//                    //登录成功处理逻辑
+//                    successHandler(customizeAuthenticationSuccessHandler).
+//                    //登录失败处理逻辑
+//                    failureHandler(customizeAuthenticationFailureHandler)
+//                //登出
+//                .and().
+//                    logout().
+//                    permitAll().//允许所有用户
+//                    //登出成功处理逻辑
+//                    logoutSuccessHandler(customizeLogoutSuccessHandler).
+//                    //登出之后删除cookie
+//                    deleteCookies("JSESSIONID")
+//                //会话管理
+//                .and().
+//                    sessionManagement().
+//                    //限制同一个账号只能一个用户使用
+//                    maximumSessions(1).
+//                    //会话信息过期策略会话信息过期策略(账号被挤下线)
+//                    expiredSessionStrategy(customizeSessionInformationExpiredStrategy);
+//    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
-                //关闭csrf防护
-                .csrf().disable();
-                //.headers().frameOptions().disable()
-//        http
-//                .antMatcher("/oauth/**").authorizeRequests()
-//                .antMatchers("/oauth/**").permitAll()
-//                .and();
-        http
-                //登录处理
-                .formLogin()   //表单方式,或httpBasic
-                .loginPage("/login")
-                .loginProcessingUrl("/form")
-                //成功登录后跳转请求接口
-                .defaultSuccessUrl("/login_success")
-                //登录失败页面请求接口
-                .failureUrl("/login_fail");
+        http.cors().and().csrf().disable()
+                .authorizeRequests()
+                //swagger接口文档放行
+                .antMatchers(
+                        "/webjars/**",
+                        "/resources/**",
+                        "/swagger-ui.html",
+                        "/swagger-resources/**",
+                        "/v2/api-docs")
+                .permitAll()
+                //登录放行
+                .antMatchers("/login")
+                .permitAll()
+                //修改用户是否可用，只能是admin类型用户操作
+                //查询所有用户，只能是admin类型用户操作
+                .antMatchers("/user/enable/**","/user/listUser")
+                .hasRole("ADMIN")
+                //注册放行,登录放行
+                .antMatchers("/user/registy/**","/user/login/**")
+                .permitAll()
+                //BI接口放行
+                .antMatchers("/BI/**")
+                .permitAll()
+                // 测试用资源，需要验证了的用户才能访问
+                .antMatchers("/tasks/**")
+                .authenticated()
+                .antMatchers(HttpMethod.DELETE, "/tasks/**")
+                .hasRole("ADMIN")
+                // 其他接口都要认证
+                .anyRequest().authenticated()
+                .and()
+                .addFilter(new JWTAuthenticationFilter(authenticationManager()))
+                .addFilter(new JWTAuthorizationFilter(authenticationManager()))
+                // 不需要session
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(customizeAuthenticationEntryPoint);
+    }
+
+    /**
+     * 权限继承
+     * @return
+     */
+    @Bean
+    RoleHierarchy roleHierarchy(){
+        RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
+        String hierarchy = "ROLE_ADMIN > ROLE_HIGHUSER ROLE_HIGHUSER > ROLE_USER";
+        roleHierarchy.setHierarchy(hierarchy);
+        return roleHierarchy;
     }
 
     /**
@@ -93,8 +210,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .inMemoryAuthentication()
                 .passwordEncoder(passwordEncoder());
-//                .withUser("oauth").password(passwordEncoder().encode("123456")).roles("ADMIN")
-//                .and()
-//                .withUser("sang").password(passwordEncoder().encode("123456")).roles("USER");
     }
 }

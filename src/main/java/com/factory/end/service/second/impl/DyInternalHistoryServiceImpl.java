@@ -1,6 +1,6 @@
 package com.factory.end.service.second.impl;
 
-import com.factory.end.mapper.second.IDyInternalHistoryMapper;
+import com.factory.end.mapper.second.DyInternalHistoryMapper;
 import com.factory.end.dto.second.DyInternalHistoryDto;
 import com.factory.end.model.second.DyInternalHistory;
 import com.factory.end.service.second.DyInternalHistoryService;
@@ -21,7 +21,7 @@ import java.util.Optional;
 public class DyInternalHistoryServiceImpl implements DyInternalHistoryService {
 
     @Autowired
-    private IDyInternalHistoryMapper iDyInternalHistoryMapper;
+    private DyInternalHistoryMapper iDyInternalHistoryMapper;
 
     //定义一个ehchache缓存名
     //private final String CACHE_NAME = "cacheTest";

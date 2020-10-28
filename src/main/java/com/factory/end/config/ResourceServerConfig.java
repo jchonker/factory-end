@@ -14,8 +14,8 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
  * @Version 1.0
  * 配置资源服务器
  */
-@Configuration
-@EnableResourceServer
+//@Configuration
+//@EnableResourceServer
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) throws Exception {
@@ -35,10 +35,10 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
      */
     @Override
     public void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()   //授权配置
-                //放行所有请求
-                .antMatchers("/**")
-                .permitAll();
+//        http.authorizeRequests()   //授权配置
+//                //放行所有请求
+////                .antMatchers("/**")
+////                .permitAll();
 //                //角色大小写不一样ADMIN和admin
 //                .antMatchers("/admin/**").hasRole("ADMIN")
 //                .antMatchers("/user/**").hasRole("USER")
@@ -61,10 +61,10 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 //                //放行oauth的接口
 //                .antMatchers("/oauth/**")
 //                .permitAll()
-                //其他接口需要登录后才能访问
-                //.anyRequest().authenticated();
-
-
+//                //其他接口需要登录后才能访问
+//                .anyRequest().authenticated()
+//
+//
 //            .and()
 //                .logout()
 //                //退出登录的url,带着token参数

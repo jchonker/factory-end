@@ -1,6 +1,9 @@
 package com.factory.end.config.exceptionHandler;
 
+import com.factory.end.exception.UserNotLoginException;
+import com.factory.end.util.http.HttpStatusEnum;
 import com.factory.end.util.http.Result;
+import io.jsonwebtoken.ExpiredJwtException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,5 +44,26 @@ public class GlobalExceptionHandler {
         logger.info("所有类型异常处理方法");
         logger.error(e.getMessage(),e);
         return result.Error(e.getMessage());
+    }
+
+    /**
+     * 处理用户未登录异常
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(UserNotLoginException.class)
+    public Result handlerUserNotLoginExceptionMethod(UserNotLoginException e){
+        logger.info("捕获UserNotLoginException异常");
+        logger.error(e.getMessage());
+        return new Result(HttpStatusEnum.UNAUTHORIZED,"用户未登录");
+    }
+
+    /**
+     * 令牌过期异常处理
+     * @param e
+     */
+    @ExceptionHandler(ExpiredJwtException.class)
+    public void handlerExpiredJwtException(ExpiredJwtException e){
+        logger.error("令牌过期");
     }
 }

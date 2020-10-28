@@ -1,8 +1,11 @@
-package com.factory.end.model.second;
+package com.factory.end.model.primary;
 
+import io.swagger.annotations.ApiParam;
 import lombok.Data;
+import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 /**
  * @Author jchonker
@@ -11,7 +14,7 @@ import javax.persistence.*;
  * 模板类
  */
 @Data
-@Table(name = "users")
+@Table(name = "pro_User")
 @Entity
 public class User {
     @Id
