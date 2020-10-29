@@ -51,9 +51,13 @@ public class UserController {
     @PostMapping("/registy/{username}/{password}/{roles}")
     @ApiOperation("注册")
     @ResponseBody
-    public Result registy(@PathVariable String username,@PathVariable String password,@PathVariable String roles){
+    public JsonResult registy(@PathVariable String username,@PathVariable String password,@PathVariable String roles){
+        User user = userService.findUserByUserName(username);
+        if(user != null){
+            return ResultTool.fail(ResultCode.USER_ACCOUNT_ALREADY_EXIST);
+        }
         userService.registry(username,password,roles);
-        return result.Success();
+        return ResultTool.success();
     }
 
     /**

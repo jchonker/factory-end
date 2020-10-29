@@ -73,7 +73,7 @@ public class MqttConfig {
 //        mqttPushClient.subscribe(defaultTopic, 0);
 
         //订阅成功，连接成功后调用执行任务
-        //timerTask.startTask();
+        timerTask.startTask();
 
         return mqttPushClient;
     }
