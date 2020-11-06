@@ -51,6 +51,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     CustomizeSessionInformationExpiredStrategy customizeSessionInformationExpiredStrategy;
 
+    @Autowired
+    AccessDeniedHandlerConfig accessDeniedHandlerConfig;
     /**
      * jwt相关bean
      */
@@ -138,15 +140,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //登录放行
                 .antMatchers("/login")
                 .permitAll()
-                //修改用户是否可用，只能是admin类型用户操作
-                //查询所有用户，只能是admin类型用户操作
-                .antMatchers("/user/enable/**","/user/listUser")
+                //修改用户是否可用,只能是admin类型用户操作
+                //设置用户是否未锁定,只能是admin类型用户操作
+                //设置用户是否未过期,只能是admin类型用户操作
+                //设置密码是否未过期,只能是admin类型用户操作
+                //查询所有用户，只能是admin类型用户操作  /user/listUser
+                //注册用户,管理员权限的才能注册
+                //修改密码,管理员权限才能操作
+                //删除用户,管理员权限才能操作
+                .antMatchers("/user/enable/**","/user/accountNonLocked/**","/user/accountNonExpired/**","/user/credentialsNonExpired/**","/user/listUser","/user/registry/**","/user/updatePassword/**","/user/deleteUser/**")
                 .hasRole("ADMIN")
-                //注册放行,登录放行
-                .antMatchers("/user/registy/**","/user/login/**")
-                .permitAll()
+                //登录放行
                 //BI接口放行
-                .antMatchers("/BI/**")
+                .antMatchers("/user/login/**","/BI/**")
                 .permitAll()
                 // 测试用资源，需要验证了的用户才能访问
                 .antMatchers("/tasks/**")
@@ -163,7 +169,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .exceptionHandling()
-                .authenticationEntryPoint(customizeAuthenticationEntryPoint);
+                //处理401
+                .authenticationEntryPoint(customizeAuthenticationEntryPoint)
+                //处理403
+                .accessDeniedHandler(accessDeniedHandlerConfig)
+                .and()
+                .sessionManagement()
+                //限制同一个账号只能一个用户使用
+                .maximumSessions(1)
+                //会话信息过期策略会话信息过期策略(账号被挤下线)
+                .expiredSessionStrategy(customizeSessionInformationExpiredStrategy);
     }
 
     /**

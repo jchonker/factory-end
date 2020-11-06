@@ -17,7 +17,7 @@ import java.io.IOException;
  * @Author jchonker
  * @Date 2020/10/19 16:25
  * @Version 1.0
- * 用户未登录获取登录状态过期失效
+ * 用户未登录获取登录状态过期失效 401
  */
 @Component
 public class CustomizeAuthenticationEntryPoint implements AuthenticationEntryPoint {
@@ -31,4 +31,5 @@ public class CustomizeAuthenticationEntryPoint implements AuthenticationEntryPoi
         httpServletResponse.setContentType("text/json;charset=utf-8");
         httpServletResponse.getWriter().write(JSON.toJSONString(result));
     }
+
 }

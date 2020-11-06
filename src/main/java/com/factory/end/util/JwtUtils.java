@@ -1,6 +1,6 @@
 package com.factory.end.util;
 
-import com.factory.end.dto.second.UserDto;
+import com.factory.end.dto.primary.UserDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

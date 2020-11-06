@@ -1,6 +1,6 @@
 package com.factory.end.service;
 
-import com.factory.end.dto.second.UserDto;
+import com.factory.end.dto.primary.UserDto;
 import com.factory.end.service.primary.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -39,7 +39,8 @@ public class MyUserDetailsService implements UserDetailsService {
         //将数据库形式的roles解析为UserDetails的权限集
         //AuthorityUtils.commaSeparatedStringToAuthorityList是Spring Security提供的,该方法用于将逗号隔开的权限集字符串切割为可用的权限对象列表
         //当然也可以自己实现,如用分号隔离开,参考generateAuthorities
-        userDto.setAuthorities(AuthorityUtils.commaSeparatedStringToAuthorityList(userDto.getRoles()));
+//        userDto.setAuthorities(AuthorityUtils.commaSeparatedStringToAuthorityList(userDto.getRoles()));
+        userDto.setAuthorities(generateAuthoritys(userDto.getRoles()));
         //AuthorityUtils.createAuthorityList(new String[]{"bhcsdv","fwefe","werw332r","qdwsfsd"});
         System.out.println("填充authorityList后的userDto:"+userDto);
         return userDto;
@@ -56,6 +57,22 @@ public class MyUserDetailsService implements UserDetailsService {
         String[] rolesArray = roles.split(":");
         if(roles != null && !"".equals(roles)){
             for(String role : rolesArray){
+                authorities.add(new SimpleGrantedAuthority(role));
+            }
+        }
+        return authorities;
+    }
+
+    /**
+     * 将roles转换成权限
+     * @param roles
+     * @return
+     */
+    private List<GrantedAuthority> generateAuthoritys(List<String> roles){
+        System.out.println("roles:"+roles.toString());
+        List<GrantedAuthority> authorities = new ArrayList<>();
+        if(roles != null && roles.size() != 0){
+            for(String role:roles){
                 authorities.add(new SimpleGrantedAuthority(role));
             }
         }

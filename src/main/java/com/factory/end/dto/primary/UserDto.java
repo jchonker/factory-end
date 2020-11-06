@@ -1,4 +1,4 @@
-package com.factory.end.dto.second;
+package com.factory.end.dto.primary;
 
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,6 +27,12 @@ public class UserDto implements UserDetails {
 
     private boolean enable;
 
+    private boolean credentialsNonExpired;
+
+    private boolean accountNonLocked;
+
+    private boolean accountNonExpired;
+
     private List<GrantedAuthority> authorities;
 
     @Override
@@ -36,19 +42,18 @@ public class UserDto implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return accountNonExpired;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return accountNonLocked;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return this.enable;
+        return this.credentialsNonExpired;
     }
-
 
     public void setAuthorities(List<GrantedAuthority> authorities){
         this.authorities = authorities;

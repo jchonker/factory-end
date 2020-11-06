@@ -1,7 +1,7 @@
 package com.factory.end.config;
 
 import com.alibaba.fastjson.JSON;
-import com.factory.end.dto.second.UserDto;
+import com.factory.end.dto.primary.UserDto;
 import com.factory.end.service.primary.UserService;
 import com.factory.end.util.http.Result;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -27,3 +27,7 @@ ROLE_HIGHUSER,ROLE_USER
 
 SpringSecurity--角色继承、动态权限
 https://blog.csdn.net/cold___play/article/details/104221492
+
+
+jpa多表查询
+https://blog.csdn.net/pan_junbiao/article/details/105322713

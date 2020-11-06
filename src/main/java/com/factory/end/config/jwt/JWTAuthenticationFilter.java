@@ -1,15 +1,13 @@
 package com.factory.end.config.jwt;
 
 import com.alibaba.fastjson.JSON;
-import com.factory.end.dto.second.UserDto;
+import com.factory.end.dto.primary.UserDto;
 import com.factory.end.util.JwtUtils;
 import com.factory.end.util.http.JsonResult;
 import com.factory.end.util.http.Result;
 import com.factory.end.util.http.ResultCode;
 import com.factory.end.util.http.ResultTool;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -34,6 +32,7 @@ import java.util.Collection;
  *  attemptAuthentication：接收并解析用户凭证。
  *  successfulAuthentication：用户成功登录后，这个方法会被调用，我们在这个方法里生成token并返回。
  */
+//@Component
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private AuthenticationManager authenticationManager;
 
@@ -58,8 +57,18 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         }
     }
 
-    // 成功验证后调用的方法
-    // 如果验证成功，就生成token并返回
+
+
+    /**
+     * 成功验证后调用的方法
+     * 如果验证成功，就生成token并返回
+     * @param request
+     * @param response
+     * @param chain
+     * @param authResult
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     protected void successfulAuthentication(HttpServletRequest request,
                                             HttpServletResponse response,
@@ -91,9 +100,17 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.getWriter().write(JSON.toJSONString(new Result(tokenStr)));
     }
 
-    //验证失败调用的方法
+    /**
+     * 验证失败调用的方法
+     * @param request
+     * @param response
+     * @param e
+     * @throws IOException
+     * @throws ServletException
+     */
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response, AuthenticationException e) throws IOException, ServletException {
+        logger.error("验证失败调用的方法");
         //response.getWriter().write("authentication failed, reason: " + e.getMessage());
         //判断各种错误
         //返回json数据

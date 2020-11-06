@@ -23,7 +23,7 @@ import java.util.Collections;
  * 验证成功当然就是进行鉴权了
  * 登录成功之后走此类进行鉴权操作
  */
-
+//@Component
 public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
     public JWTAuthorizationFilter(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -45,7 +45,11 @@ public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
         super.doFilterInternal(request, response, chain);
     }
 
-    // 这里从token中获取用户信息并新建一个token
+    /**
+     * 这里从token中获取用户信息并新建一个token
+     * @param tokenHeader
+     * @return
+     */
     private UsernamePasswordAuthenticationToken getAuthentication(String tokenHeader) {
         String token = tokenHeader.replace(JwtUtils.TOKEN_PREFIX, "");
         String username = JwtUtils.getUsername(token);

@@ -77,12 +77,14 @@ public class Result implements Serializable {
         this.data = data;
     }
 
-    /**\
+    /**
      * 构造方法
      * @param httpStatusEnum
      */
     public Result(HttpStatusEnum httpStatusEnum){
         this.httpStatusEnum = httpStatusEnum;
+        this.code = httpStatusEnum.code()+"";
+        this.message = httpStatusEnum.reasonPhraseCN();
     }
 
     /**
@@ -92,6 +94,8 @@ public class Result implements Serializable {
      */
     public Result(HttpStatusEnum httpStatusEnum,Object data){
         this.httpStatusEnum = httpStatusEnum;
+        this.code = httpStatusEnum.code()+"";
+        this.message = httpStatusEnum.reasonPhraseCN();
         this.data = data;
     }
 

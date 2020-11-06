@@ -1,11 +1,10 @@
 package com.factory.end.model.primary;
 
-import io.swagger.annotations.ApiParam;
 import lombok.Data;
-import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @Author jchonker
@@ -21,12 +20,25 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "username")
     private String username;
 
+    @Column(name = "password")
     private String password;
 
-    private String roles;
-
+    @Column(name = "enable")
     private boolean enable;
+
+    private boolean credentialsNonExpired;
+
+    private boolean accountNonLocked;
+
+    private boolean accountNonExpired;
+
+    @ManyToMany
+    @JoinTable(name = "pro_User_Role",uniqueConstraints = {@UniqueConstraint(columnNames = {"uid","rid"})},
+            joinColumns = {@JoinColumn(name = "uid",referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "rid",referencedColumnName = "id")})
+    private List<Role> roleList = new ArrayList<>();
 
 }

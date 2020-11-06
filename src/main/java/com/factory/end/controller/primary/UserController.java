@@ -1,6 +1,6 @@
 package com.factory.end.controller.primary;
 
-import com.factory.end.dto.second.UserDto;
+import com.factory.end.dto.primary.UserDto;
 import com.factory.end.model.primary.User;
 import com.factory.end.service.primary.UserService;
 import com.factory.end.util.JwtUtils;
@@ -43,17 +43,17 @@ public class UserController {
 
     /**
      * 注册
-     * @param username
-     * @param password
-     * @param roles
+     * @param username 用户名
+     * @param password 密码
+     * @param roles 角色
      * @return
      */
-    @PostMapping("/registy/{username}/{password}/{roles}")
+    @PostMapping("/registry/{username}/{password}/{roles}")
     @ApiOperation("注册")
     @ResponseBody
-    public JsonResult registy(@PathVariable String username,@PathVariable String password,@PathVariable String roles){
-        User user = userService.findUserByUserName(username);
-        if(user != null){
+    public JsonResult registy(@PathVariable String username,@PathVariable String password,@PathVariable Integer roles){
+        UserDto userDto = userService.findByUserName(username);
+        if(userDto != null){
             return ResultTool.fail(ResultCode.USER_ACCOUNT_ALREADY_EXIST);
         }
         userService.registry(username,password,roles);
@@ -62,8 +62,8 @@ public class UserController {
 
     /**
      * 登录
-     * @param username
-     * @param password
+     * @param username 用户名
+     * @param password 密码
      * @return
      */
     @PostMapping("/login/{username}/{password}")
@@ -74,38 +74,57 @@ public class UserController {
         logger.info("password:"+password);
         JsonResult jsonResult = null;
         UserDto userDto = userService.findByUserName(username);
+
         //查询用户名是否存在
-        if(userDto != null){
-            //用户是否可用
-            if(userDto.isEnable()){
-                //对比密码是否正确
-                if(encoder.matches(password,userDto.getPassword())){
-                    //生成token
-                    String token = JwtUtils.createToken(username, userDto.getRoles());
-                    String tokenStr = JwtUtils.TOKEN_PREFIX + token;
-                    logger.info("tokenStr:"+tokenStr);
-                    jsonResult = ResultTool.success(tokenStr);
-                }
-                else {
-                    jsonResult = ResultTool.fail(ResultCode.USER_CREDENTIALS_ERROR);
-                    logger.error("用户密码不正确");
-                }
-            }
-            else {
-                logger.error("用户不可用");
-                jsonResult = ResultTool.fail(ResultCode.USER_ACCOUNT_DISABLE);
-            }
-        }
-        else {
+        if(userDto == null){
             logger.error("用户不存在");
             jsonResult = ResultTool.fail(ResultCode.USER_ACCOUNT_NOT_EXIST);
+            return jsonResult;
         }
+        //用户是否可用
+        if(!userDto.isEnable()){
+            logger.error("用户不可用");
+            jsonResult = ResultTool.fail(ResultCode.USER_ACCOUNT_DISABLE);
+            return jsonResult;
+        }
+        //用户账户锁定
+        if(!userDto.isAccountNonLocked()){
+            logger.error("用户可账户锁定");
+            jsonResult = ResultTool.fail(ResultCode.USER_ACCOUNT_LOCKED);
+            return jsonResult;
+        }
+        //用户账号过期
+        if(!userDto.isAccountNonExpired()){
+            logger.error("用户账户过期");
+            jsonResult = ResultTool.fail(ResultCode.USER_ACCOUNT_EXPIRED);
+            return jsonResult;
+        }
+        //用户密码过期
+        if(!userDto.isCredentialsNonExpired()){
+            logger.error("密码过期");
+            jsonResult = ResultTool.fail(ResultCode.USER_CREDENTIALS_EXPIRED);
+            return jsonResult;
+        }
+        //对比密码是否正确
+        if(!encoder.matches(password,userDto.getPassword())){
+            jsonResult = ResultTool.fail(ResultCode.USER_CREDENTIALS_ERROR);
+            logger.error("用户密码不正确");
+            return jsonResult;
+        }
+        //生成token
+        String token = JwtUtils.createToken(username, userDto.getRoles().toString());
+        String tokenStr = JwtUtils.TOKEN_PREFIX + token;
+        logger.info("tokenStr:"+tokenStr);
+        jsonResult = ResultTool.success(tokenStr);
+
         return jsonResult;
     }
 
 
     /**
      * 设置用户是否可用
+     * @param username 用户名
+     * @param enable 是否可用
      * @return
      */
     @PutMapping("/enable/{username}/{enable}")
@@ -113,9 +132,75 @@ public class UserController {
     @ResponseBody
     public JsonResult enableUser(@ApiParam(value = "用户名",required = true) @PathVariable String username,@ApiParam(name = "enable",value = "用户是否可用",required = true,allowableValues = "0,1") @PathVariable Integer enable){
         //先判断用户是否存在
-        User user = userService.findUserByUserName(username);
-        if(user != null){
+        UserDto userDto = userService.findByUserName(username);
+        if(userDto != null){
             userService.updateEnableByUserName(username, enable);
+            return ResultTool.success();
+        }
+        else {
+            return ResultTool.fail(ResultCode.USER_ACCOUNT_NOT_EXIST);
+        }
+    }
+
+    /**
+     * 设置用户是否未锁定
+     * @param username
+     * @param accountNonLocked
+     * @return
+     */
+    @PutMapping("/accountNonLocked/{username}/{accountNonLocked}")
+    @ApiOperation("设置用户是否未锁定")
+    @ResponseBody
+    public JsonResult updateAccountNonLockedByUserName(@ApiParam(value = "用户名",required = true) @PathVariable String username,@ApiParam(name = "accountNonLocked",value = "用户是否未锁定",required = true,allowableValues = "0,1") @PathVariable Integer accountNonLocked){
+        //先判断用户是否存在
+        UserDto userDto = userService.findByUserName(username);
+        if(userDto != null){
+            userService.updateAccountNonLockedByUserName(username, accountNonLocked);
+            return ResultTool.success();
+        }
+        else {
+            return ResultTool.fail(ResultCode.USER_ACCOUNT_NOT_EXIST);
+        }
+    }
+
+
+    /**
+     * 设置用户是否未过期
+     * @param username
+     * @param accountNonExpired
+     * @return
+     */
+    @PutMapping("/accountNonExpired/{username}/{accountNonExpired}")
+    @ApiOperation("设置用户是否未过期")
+    @ResponseBody
+    public JsonResult updateAccountNonExpiredByUserName(@ApiParam(value = "用户名",required = true) @PathVariable String username,@ApiParam(name = "accountNonExpired",value = "设置用户是否未过期",required = true,allowableValues = "0,1") @PathVariable Integer accountNonExpired){
+        String string = accountNonExpired.getClass().toString();
+        logger.info("accountNonExpired数据类型:"+string);
+        //先判断用户是否存在
+        UserDto userDto = userService.findByUserName(username);
+        if(userDto != null){
+            userService.updateAccountNonExpiredByUserName(username, accountNonExpired);
+            return ResultTool.success();
+        }
+        else {
+            return ResultTool.fail(ResultCode.USER_ACCOUNT_NOT_EXIST);
+        }
+    }
+
+    /**
+     * 设置密码是否未过期
+     * @param username
+     * @param credentialsNonExpired
+     * @return
+     */
+    @PutMapping("/credentialsNonExpired/{username}/{credentialsNonExpired}")
+    @ApiOperation("设置密码是否未过期")
+    @ResponseBody
+    public JsonResult updateCredentialsNonExpiredByUserName(@ApiParam(value = "用户名",required = true) @PathVariable String username,@ApiParam(name = "credentialsNonExpired",value = "设置密码是否未过期",required = true,allowableValues = "0,1") @PathVariable Integer credentialsNonExpired){
+        //先判断用户是否存在
+        UserDto userDto = userService.findByUserName(username);
+        if(userDto != null){
+            userService.updateCredentialsNonExpiredByUserName(username, credentialsNonExpired);
             return ResultTool.success();
         }
         else {
@@ -131,25 +216,30 @@ public class UserController {
     @ApiOperation("查询所有用户")
     @ResponseBody
     public JsonResult listUser(){
-        List<User> users = userService.listUser();
-        //去除密码项
-        for(User user:users){
-            user.setPassword("");
+        List<UserDto> users = userService.listUser();
+        if(users != null){
+            //去除密码项
+            for(UserDto user:users){
+                user.setPassword("");
+            }
+            return ResultTool.success(users);
         }
-        return ResultTool.success(users);
+        else {
+            return ResultTool.success();
+        }
     }
 
     /**
      * 判断用户是否存在
-     * @param username
+     * @param username 用户名
      * @return
      */
     @GetMapping("/exist/{username}")
     @ApiOperation("判断用户是否存在")
     @ResponseBody
     public JsonResult existUser(@PathVariable String username){
-        User user = userService.findUserByUserName(username);
-        if(user != null){
+        UserDto userDto = userService.findByUserName(username);
+        if(userDto != null){
             return ResultTool.success(true);
         }
         else {
@@ -159,20 +249,20 @@ public class UserController {
 
     /**
      * 修改密码
-     * @param username
-     * @param password
+     * @param username 用户名
+     * @param password 密码
      * @return
      */
     @PutMapping("/updatePassword/{username}/{password}")
     @ApiOperation("修改密码")
     @ResponseBody
     public JsonResult updatePasswordByUserName(@PathVariable String username,@PathVariable String password){
-        User user = userService.findUserByUserName(username);
-        if(user != null){
+        UserDto userDto = userService.findByUserName(username);
+        if(userDto != null){
             //判断密码是否相同
-            UserDto userDto = userService.findByUserName(username);
+            UserDto compUserDto = userService.findByUserName(username);
             //密码不相同
-            if(!new BCryptPasswordEncoder().matches(password,userDto.getPassword())){
+            if(!new BCryptPasswordEncoder().matches(password,compUserDto.getPassword())){
                 //密码加密
                 userService.updatePasswordByUserName(username,new BCryptPasswordEncoder().encode(password));
                 return ResultTool.success("修改密码成功");
@@ -188,15 +278,15 @@ public class UserController {
 
     /**
      * 删除用户
-     * @param username
+     * @param username 用户名
      * @return
      */
     @DeleteMapping("deleteUser/{username}")
     @ApiOperation("删除用户")
     @ResponseBody
     public JsonResult deleteUserByUsername(@PathVariable String username){
-        User user = userService.findUserByUserName(username);
-        if(user != null){
+        UserDto userDto = userService.findByUserName(username);
+        if(userDto != null){
             userService.deleteUserByUsername(username);
             return ResultTool.success("删除用户成功");
         }else {
@@ -206,19 +296,24 @@ public class UserController {
 
     /**
      * 根据用户名查询用户
-     * @param username
+     * @param username 用户名
      * @return
      */
     @GetMapping("findUser/{username}")
     @ApiOperation("根据用户名查询用户")
     @ResponseBody
     public JsonResult findUserByUserName(@PathVariable String username){
-        User user = userService.findUserByUserName(username);
+        UserDto userDto = userService.findByUserName(username);
         //去除密码项
-        user.setPassword("");
-        return ResultTool.success(user);
+        userDto.setPassword("");
+        return ResultTool.success(userDto);
     }
 
+    /**
+     * 根据账号是否可用进行查询
+     * @param enable
+     * @return
+     */
     @GetMapping("/findAllByEnable/{enable}")
     @ApiOperation("根据账号是否可用进行查询")
     @ResponseBody
@@ -230,14 +325,19 @@ public class UserController {
         return ResultTool.success("数据为空");
     }
 
-    @GetMapping("/findAllByRole/{roles}")
-    @ApiOperation("根据角色查询")
-    @ResponseBody
-    public JsonResult findAllByRoles(@PathVariable String roles){
-        List<User> userList = userService.findUserByRoles(roles);
-        if(userList != null){
-            return ResultTool.success(userList);
-        }
-        return ResultTool.success("数据为空");
-    }
+    /**
+     * 根据角色查询
+     * @param roles 角色
+     * @return
+     */
+//    @GetMapping("/findAllByRole/{roles}")
+//    @ApiOperation("根据角色查询")
+//    @ResponseBody
+//    public JsonResult findAllByRoles(@PathVariable String roles){
+//        List<User> userList = userService.findUserByRoles(roles);
+//        if(userList != null){
+//            return ResultTool.success(userList);
+//        }
+//        return ResultTool.success("数据为空");
+//    }
 }

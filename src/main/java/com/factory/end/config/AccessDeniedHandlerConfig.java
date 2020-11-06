@@ -1,5 +1,7 @@
 package com.factory.end.config;
 
+import com.alibaba.fastjson.JSON;
+import com.factory.end.util.http.*;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.WebAttributes;
@@ -16,8 +18,9 @@ import java.io.PrintWriter;
  * @Author jchonker
  * @Date 2020/8/23 0:44
  * @Version 1.0
+ * 权限不足 403
  */
-//@Configuration
+@Configuration
 public class AccessDeniedHandlerConfig implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException, ServletException {
@@ -28,14 +31,10 @@ public class AccessDeniedHandlerConfig implements AccessDeniedHandler {
 //        out.flush();
 //        out.close();
 
-//        // Put exception into request scope (perhaps of use to a view)
-//        httpServletRequest.setAttribute(WebAttributes.ACCESS_DENIED_403, e);
-//
-//        // Set the 403 status code.
-//        httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
-//
-//        // forward to error page.
-//        RequestDispatcher dispatcher = httpServletRequest.getRequestDispatcher("/login");
-//        dispatcher.forward(httpServletRequest, httpServletResponse);
+        System.out.println("403处理...");
+//        JsonResult result = ResultTool.fail(ResultCode.USER_ACCOUNT_USE_BY_OTHERS);
+        Result result = new Result(HttpStatusEnum.FORBIDDEN);
+        httpServletResponse.setContentType("text/json;charset=utf-8");
+        httpServletResponse.getWriter().write(JSON.toJSONString(result));
     }
 }
